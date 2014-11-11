@@ -75,16 +75,15 @@ namespace DocDirect.Styles.CustomWindows
             });
         }
 
-        void IconMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
-
         void IconMouseUp(object sender, MouseButtonEventArgs e)
         {
             var element = sender as FrameworkElement;
             var point = element.PointToScreen(new Point(element.ActualWidth / 2, element.ActualHeight));
             sender.ForWindowFromTemplate(w => SystemCommands.ShowSystemMenu(w, point));
+        }
+        void SettingsMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.MessageBox.Show("Settings!! :)", "settings", MessageBoxButton.OK);
         }
     }
 }

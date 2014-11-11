@@ -7,7 +7,7 @@
     <SolidColorBrush x:Key="WindowBorderBrushInactive" Color="#999999" />
     <SolidColorBrush x:Key="WindowStatusForeground" Color="#FFFFFF" />
     <SolidColorBrush x:Key="WindowStatusForegroundInactive" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="ForegroundStaticText" Color="#595959" />
+    <SolidColorBrush x:Key="LightGray" Color="#595959" />
     
     <BitmapImage x:Key="Logo" UriSource="pack://application:,,,/Resourses/Images/noLogo.png"/>
     
@@ -77,11 +77,11 @@
                                         DockPanel.Dock="Top" 
                                         Background="{StaticResource TitleBarBackgroundBrush}"
                                         BorderThickness="0">
-                                        <Grid Height="32" ShowGridLines="True">
+                                        <Grid Height="32">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="36"/>
-                                                <ColumnDefinition Width="4*"/>
-                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="110"/>
                                                 <ColumnDefinition Width="45"/>
                                                 <ColumnDefinition Width="34"/>
                                                 <ColumnDefinition Width="34"/>
@@ -94,18 +94,18 @@
                                                 Margin="0 0 10 0"
                                                 Width="32"
                                                 Height="32"
-                                                MouseUp="IconMouseUp"
-                                                MouseLeftButtonDown="IconMouseLeftButtonDown"
+                                                MouseUp="IconMouseUp"                                                
                                                 WindowChrome.IsHitTestVisibleInChrome="True"
-                                            />
-                                            
-                                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                            />                                            
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 30 0">
                                                 <Label x:Name="Settings"                                               
                                                        FontFamily="Segoe UI"
                                                        FontWeight="Bold" 
                                                        Foreground="{StaticResource ForegroundStaticText}"
                                                        FontSize="9"
                                                        Content="SETTINGS  |"
+                                                       MouseUp="SettingsMouseUp"
+                                                       WindowChrome.IsHitTestVisibleInChrome="True"
                                                 />
                                                 <Label x:Name="Hellp"    
                                                        Margin="-8 0 0 0"   
@@ -114,6 +114,30 @@
                                                        Foreground="{StaticResource ForegroundStaticText}"
                                                        FontSize="9"
                                                        Content=" HELLP"
+                                                       WindowChrome.IsHitTestVisibleInChrome="True"
+                                                />
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right" 
+                                                        TextOptions.TextRenderingMode="ClearType"
+                                                        TextOptions.TextFormattingMode="Display">
+                                                <Label x:Name="SignIn"   
+                                                       Margin="0 0 10 0"
+                                                       FontFamily="Segoe UI"
+                                                       FontWeight="Bold" 
+                                                       Foreground="Black"
+                                                       FontSize="11"
+                                                       Content="SIGN IN"
+                                                       WindowChrome.IsHitTestVisibleInChrome="True"
+                                                />
+                                                <Label x:Name="CreateNewAccount"    
+                                                       Margin="0 -7 0 0"   
+                                                       FontFamily="Segoe UI"
+                                                       FontWeight="SemiBold" 
+                                                       Foreground="{StaticResource LightGray}"
+                                                       FontSize="9"
+                                                       Content="CREATE NEW ACCOUNT"
+                                                       HorizontalAlignment="Right"
+                                                       WindowChrome.IsHitTestVisibleInChrome="True"
                                                 />
                                             </StackPanel>
                                             <Button x:Name="MinButton"                                            

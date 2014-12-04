@@ -8,30 +8,31 @@
     <SolidColorBrush x:Key="WindowStatusForeground" Color="#FFFFFF" />
     <SolidColorBrush x:Key="WindowStatusForegroundInactive" Color="#FFFFFF" />
     <SolidColorBrush x:Key="LightGray" Color="#595959" />
-    
+    <SolidColorBrush x:Key="LightGrayMin" Color="#00595959"/>
+
     <BitmapImage x:Key="Logo" UriSource="pack://application:,,,/Resourses/Images/noLogo.png"/>
     
     <Style x:Key="WindowStyleTitleBarButton" TargetType="{x:Type Button}">
         <Setter Property="Focusable" Value="false" />
+        <Setter Property="Foreground" Value="{StaticResource LightGray}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Grid>
-                        <Border
-                            x:Name="PART_border"
-                            Background="Transparent"
-                            />
+                        <Border x:Name="PART_border" Background="Transparent"/>
                         <ContentPresenter />
                     </Grid>
-                    <ControlTemplate.Triggers>
+                    <ControlTemplate.Triggers>                       
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PART_border" Property="Background" Value="#FFF" />
-                            <Setter TargetName="PART_border" Property="Opacity" Value="0.7" />
+                            <Setter TargetName="PART_border" Property="BitmapEffect" >
+                                <Setter.Value>
+                                    <OuterGlowBitmapEffect GlowColor="Blue" GlowSize="5" Noise="1" Opacity="0.4" />
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PART_border" Property="Background" Value="{StaticResource WindowBorderBrush}"/>
                             <Setter TargetName="PART_border" Property="Opacity" Value="1" />
-                            <Setter Property="Foreground" Value="#FFF"/>
+                            <Setter Property="Foreground" Value="Blue"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -101,7 +102,7 @@
                                                 <Label x:Name="Settings"                                               
                                                        FontFamily="Segoe UI"
                                                        FontWeight="Bold" 
-                                                       Foreground="{StaticResource ForegroundStaticText}"
+                                                       Foreground="{StaticResource LightGray}"
                                                        FontSize="9"
                                                        Content="SETTINGS  |"
                                                        MouseUp="SettingsMouseUp"
@@ -111,7 +112,7 @@
                                                        Margin="-8 0 0 0"   
                                                        FontFamily="Segoe UI"
                                                        FontWeight="Bold" 
-                                                       Foreground="{StaticResource ForegroundStaticText}"
+                                                       Foreground="{StaticResource LightGray}"
                                                        FontSize="9"
                                                        Content=" HELLP"
                                                        WindowChrome.IsHitTestVisibleInChrome="True"

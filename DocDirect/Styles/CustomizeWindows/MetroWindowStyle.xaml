@@ -13,7 +13,7 @@
     <BitmapImage x:Key="Logo" UriSource="pack://application:,,,/Resourses/Images/noLogo.png"/>
     
     <Style x:Key="WindowStyleTitleBarButton" TargetType="{x:Type Button}">
-        <Setter Property="Focusable" Value="false" />
+        
         <Setter Property="Foreground" Value="{StaticResource LightGray}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -24,11 +24,7 @@
                     </Grid>
                     <ControlTemplate.Triggers>                       
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PART_border" Property="BitmapEffect" >
-                                <Setter.Value>
-                                    <OuterGlowBitmapEffect GlowColor="Blue" GlowSize="5" Noise="1" Opacity="0.4" />
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Foreground" Value="Black" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="PART_border" Property="Opacity" Value="1" />
@@ -78,27 +74,30 @@
                                         DockPanel.Dock="Top" 
                                         Background="{StaticResource TitleBarBackgroundBrush}"
                                         BorderThickness="0">
-                                        <Grid Height="32">
+                                        <Grid Height="32" ShowGridLines="True">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="36"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="110"/>
-                                                <ColumnDefinition Width="45"/>
-                                                <ColumnDefinition Width="34"/>
-                                                <ColumnDefinition Width="34"/>
-                                                <ColumnDefinition Width="34"/>
+                                                <ColumnDefinition Width="55"/>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="20"/>
                                             </Grid.ColumnDefinitions>
                                             <Image x:Name="img_login"                                            
                                                 Grid.Column="3"
                                                 Source="{StaticResource Logo}" 
-                                                HorizontalAlignment="Right"
+                                                HorizontalAlignment="Left"
                                                 Margin="0 0 10 0"
                                                 Width="32"
                                                 Height="32"
                                                 MouseUp="IconMouseUp"                                                
                                                 WindowChrome.IsHitTestVisibleInChrome="True"
                                             />                                            
-                                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 30 0">
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" 
+                                                        HorizontalAlignment="Right" Margin="0 0 30 0"
+                                                        TextOptions.TextRenderingMode="ClearType"
+                                                        TextOptions.TextFormattingMode="Display">
                                                 <Label x:Name="Settings"                                               
                                                        FontFamily="Segoe UI"
                                                        FontWeight="Bold" 
@@ -144,12 +143,11 @@
                                             <Button x:Name="MinButton"                                            
                                                 Grid.Column="4"
                                                 VerticalAlignment="Top"
-                                                Width="34"
+                                                Width="20"
                                                 Height="26"
                                                 Style="{StaticResource WindowStyleTitleBarButton}"
                                                 Click="MinButtonClick"
-                                                WindowChrome.IsHitTestVisibleInChrome="True"
-                                                >
+                                                WindowChrome.IsHitTestVisibleInChrome="True">
                                                 <Grid MaxHeight="9" MaxWidth="9">
                                                     <Path
                                                     Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
@@ -163,7 +161,7 @@
                                             <Button x:Name="MaxButton"
                                                 Grid.Column="5"                                                 
                                                 VerticalAlignment="Top"
-                                                Width="34"
+                                                Width="20"
                                                 Height="26"
                                                 Style="{StaticResource WindowStyleTitleBarButton}"
                                                 Click="MaxButtonClick"
@@ -183,12 +181,12 @@
                                             <Button x:Name="CloseButton" 
                                                 Grid.Column="6"                                                
                                                 VerticalAlignment="Top"
-                                                Width="34"
+                                                Width="20"
                                                 Height="26"
                                                 Style="{StaticResource WindowStyleTitleBarButton}"
                                                 Click="CloseButtonClick"
                                                 WindowChrome.IsHitTestVisibleInChrome="True">
-                                                <Grid MaxHeight="9" MaxWidth="9">
+                                                <Grid MaxHeight="9" MaxWidth="10">
                                                     <Path
                                                     Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                                     StrokeThickness="1.5"

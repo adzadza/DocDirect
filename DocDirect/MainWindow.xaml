@@ -9,18 +9,48 @@
     Style="{StaticResource MetroWindowStyle}"
     WindowStartupLocation="CenterScreen">
     <DockPanel>
-        <Grid>
+
+        <Grid DockPanel.Dock="Top" 
+              ShowGridLines="True" 
+              TextOptions.TextRenderingMode="ClearType"                                                        
+              TextOptions.TextFormattingMode="Display">
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition MaxHeight="24"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>         
+                <ColumnDefinition Width="Auto" MinWidth="26"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
             
+            <Rectangle  Grid.Row="0" Grid.RowSpan="2"
+                        Height="54"
+                        Width="14"
+                        Fill="Blue"
+                        HorizontalAlignment="Left"
+                        />
+            <Button Name="btnGoBackPage" 
+                    Grid.Row="0" 
+                    Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource BackButtonStyle}"/>
+            <Label Name="labelHome" FontFamily="Candara"
+                   Content="HOME" 
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   FontSize="18"/>
+            <Label Name="labelHistiry" FontFamily="Candara"
+                   Content="HISTORY" 
+                   Grid.Row="1"
+                   Grid.Column="2"
+                   FontSize="18"/>
         </Grid>
-        
+        <Frame Name="HomeFrame"  
+               DockPanel.Dock="Top" 
+               Padding="10 10 10 10"/>
         <StatusBar
             DockPanel.Dock="Bottom"
             Height="24">
@@ -29,16 +59,6 @@
                 <ResizeGrip Opacity="0.75" />
             </StatusBarItem>
         </StatusBar>
-        <TextBox
-            Text="Hello, world!"
-            FontSize="13"
-            BorderThickness="0" 
-            AcceptsReturn="True" 
-            Padding="2"
-            Background="Transparent"
-            ScrollViewer.CanContentScroll="True" 
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto"
-            />
+        
     </DockPanel>
 </Window>

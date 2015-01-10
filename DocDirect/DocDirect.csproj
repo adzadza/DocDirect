@@ -69,7 +69,13 @@
     <Compile Include="Styles\CustomizeButtons\BackButtonStyle.xaml.cs">
       <DependentUpon>BackButtonStyle.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Styles\CustomizeButtons\SearchButtonStyle.xaml.cs">
+      <DependentUpon>SearchButtonStyle.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Styles\CustomizeWindows\MetroWindowStyle.cs" />
+    <Compile Include="Styles\TextBoxSearch.xaml.cs">
+      <DependentUpon>TextBoxSearch.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -90,7 +96,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Styles\CustomizeButtons\SearchButtonStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\CustomizeWindows\MetroWindowStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\TextBoxSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

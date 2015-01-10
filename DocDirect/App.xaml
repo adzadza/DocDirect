@@ -7,6 +7,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/CustomizeWindows/MetroWindowStyle.xaml"/>
                 <ResourceDictionary Source="Styles/CustomizeButtons/BackButtonStyle.xaml"/>
+                <ResourceDictionary Source="Styles/CustomizeButtons/SearchButtonStyle.xaml"/>
+                <ResourceDictionary Source="Styles/TextBoxSearch.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

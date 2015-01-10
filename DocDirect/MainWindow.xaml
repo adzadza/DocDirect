@@ -5,24 +5,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="DocDirect" 
     Height="500" Width="650"
-    MinHeight="500" MinWidth="650"    
+    MinHeight="600" MinWidth="800"    
     Style="{StaticResource MetroWindowStyle}"
     WindowStartupLocation="CenterScreen">
     <DockPanel>
-
         <Grid DockPanel.Dock="Top" 
               ShowGridLines="True" 
               TextOptions.TextRenderingMode="ClearType"                                                        
               TextOptions.TextFormattingMode="Display">
             <Grid.RowDefinitions>
                 <RowDefinition MaxHeight="24"></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition MaxHeight="30"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MinWidth="26"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
             <Rectangle  Grid.Row="0" Grid.RowSpan="2"
@@ -47,6 +46,13 @@
                    Grid.Row="1"
                    Grid.Column="2"
                    FontSize="18"/>
+            
+            <TextBox Grid.Row="0" Grid.RowSpan="2"
+                     Grid.Column="3"
+                     x:Name='tbSearch'
+                     Margin="10 10 40 10"
+                     Style="{StaticResource TextBoxIconSearchStyle}"/>           
+            
         </Grid>
         <Frame Name="HomeFrame"  
                DockPanel.Dock="Top" 

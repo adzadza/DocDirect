@@ -4,8 +4,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="DocDirect" 
-    Height="500" Width="650"
-    MinHeight="600" MinWidth="800"    
+    MinHeight="600" MinWidth="700"  
+    Height="650" Width="850"
     Style="{StaticResource MetroWindowStyle}"
     WindowStartupLocation="CenterScreen">
     <DockPanel>
@@ -14,7 +14,7 @@
               TextOptions.TextRenderingMode="ClearType"                                                        
               TextOptions.TextFormattingMode="Display">
             <Grid.RowDefinitions>
-                <RowDefinition MaxHeight="24"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
                 <RowDefinition MaxHeight="30"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -27,14 +27,21 @@
             <Rectangle  Grid.Row="0" Grid.RowSpan="2"
                         Height="54"
                         Width="14"
-                        Fill="Blue"
-                        HorizontalAlignment="Left"
-                        />
+                        HorizontalAlignment="Left">
+                <Rectangle.Fill>
+                    <RadialGradientBrush RadiusX="1" RadiusY="1" GradientOrigin="0.2,0.7">
+                        <GradientStop Color="#007ACC" Offset="0"/>
+                        <GradientStop Color="#FF3399" Offset="1"/>
+                    </RadialGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
             <Button Name="btnGoBackPage" 
                     Grid.Row="0" 
                     Grid.Column="1"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
+                    Width="28"
+                    Height="28"
                     Style="{StaticResource BackButtonStyle}"/>
             <Label Name="labelHome" FontFamily="Candara"
                    Content="HOME" 
@@ -51,12 +58,15 @@
                      Grid.Column="3"
                      x:Name='tbSearch'
                      Margin="10 10 40 10"
+                     Height="28"
+                     Width="180"
                      Style="{StaticResource TextBoxIconSearchStyle}"/>           
             
         </Grid>
         <Frame Name="HomeFrame"  
                DockPanel.Dock="Top" 
-               Padding="10 10 10 10"/>
+               Padding="10 10 10 10">            
+        </Frame>
         <StatusBar
             DockPanel.Dock="Bottom"
             Height="24">

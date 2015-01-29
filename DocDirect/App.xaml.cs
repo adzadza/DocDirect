@@ -8,10 +8,8 @@ using System.Windows;
 
 namespace DocDirect
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+
     }
 }

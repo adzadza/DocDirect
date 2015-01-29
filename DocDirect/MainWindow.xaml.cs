@@ -22,5 +22,5 @@ namespace DocDirect
         {
             InitializeComponent();
         }
-      }
+    }
 }

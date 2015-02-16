@@ -96,9 +96,9 @@ namespace DocDirect.ViewModel
             Navigation.Navigate(Navigation.m_CollectionPageAlias, CollectionViewModel);
         }
 
-        private void CloseWindowCommand(object target, ExecutedRoutedEventArgs e)
-        {
-            //SystemCommands.CloseWindow(this);
-        }
+        //private void CloseWindowCommand(object target, ExecutedRoutedEventArgs e)
+        //{
+        //    SystemCommands.CloseWindow(this);
+        //}
     }
 }

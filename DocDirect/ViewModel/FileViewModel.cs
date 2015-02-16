@@ -10,9 +10,9 @@ namespace DocDirect.ViewModel
 {
     class FileViewModel : ViewModelBase
     {
-        private File m_File;
+        private FileModel m_File;
 
-        public FileViewModel(File file)
+        public FileViewModel(FileModel file)
         {
             this.m_File = file;
         }

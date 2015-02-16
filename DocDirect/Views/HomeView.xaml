@@ -29,7 +29,6 @@
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
                 </GridViewColumn>
-                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
                 <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Size, Converter={StaticResource SizeConverter}}"/>
 
             </GridView.Columns>

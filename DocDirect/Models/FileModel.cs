@@ -9,13 +9,13 @@ using Windows.Storage.FileProperties;
 
 namespace DocDirect
 {
-    public class File
+    public class FileModel
     {
         private string m_Name;
         private string m_Path; // full path
         private ulong  m_Size;
 
-        public File(string Name, string Path, ulong Size )
+        public FileModel(string Name, string Path, ulong Size )
         {
             m_Name = Name;
             m_Path = Path;

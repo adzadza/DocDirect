@@ -68,7 +68,11 @@
     <Compile Include="Navigation\IPageResolver.cs" />
     <Compile Include="Navigation\Navigation.cs" />
     <Compile Include="Navigation\PagesResolver.cs" />
+    <Compile Include="Commands\ComandsAsync\AsyncCommand.cs" />
+    <Compile Include="Commands\ComandsAsync\AsyncCommandBase.cs" />
     <Compile Include="ViewModel\CollectionViewModel.cs" />
+    <Compile Include="Commands\ComandsAsync\IAsyncCommand.cs" />
+    <Compile Include="Commands\ComandsAsync\NotifyTaskCompletion.cs" />
     <Compile Include="ViewModel\Interface\IViewModelResolver.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelsResolver.cs" />

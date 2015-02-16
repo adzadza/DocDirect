@@ -1,0 +1,91 @@
+﻿<Window x:Class="DocDirect.MainView"
+        xmlns:local="clr-namespace:DocDirect"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DocDirect" 
+        MinHeight="600" MinWidth="700"  
+        Height="700" Width="1000"
+        Style="{StaticResource MetroWindowStyle}"
+        WindowStartupLocation="CenterScreen">
+    <Grid ShowGridLines="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="95"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
+        <Grid ShowGridLines="True" 
+              TextOptions.TextRenderingMode="ClearType"                                                        
+              TextOptions.TextFormattingMode="Display"
+              Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="29"></RowDefinition>
+                <RowDefinition Height="29"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="26"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <Button Name="btnGoBackPage" 
+                    Margin="7 -7 0 0"
+                    Grid.Row="0" 
+                    Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Width="30"
+                    Height="30"
+                    Style="{StaticResource BackButtonStyle}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="35 0 0 0" 
+                        MouseLeftButtonUp="StackPanel_MouseLeftButtonUp">
+                <Button Name="btnHome" 
+                       Content="Home"
+                       FontSize="22"
+                       Margin="2"
+                       Style="{StaticResource ButtonViewPageStyle}"
+                       Command="{Binding GoToHomePage}" 
+                       CommandParameter="{Binding HomeViewModel}" />
+                <Button Name="btnCollection" 
+                       Content="Collection" 
+                       FontSize="22"
+                       Margin="10 2 0 0"
+                       Style="{StaticResource ButtonViewPageStyle}"
+                       Command="{Binding GoToCollectionPage}"
+                       CommandParameter="{Binding CollectionViewModel}" />
+            </StackPanel>
+
+            <TextBox Grid.Row="0" Grid.RowSpan="2"
+                     Grid.Column="3"
+                     x:Name='tbSearch'
+                     Margin="10 10 80 10"
+                     Height="28"
+                     Width="190"
+                     Style="{StaticResource TextBoxIconSearchStyle}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="35 0 0 0">
+                <Button x:Name="btnMusic" Content="Musik"                        
+                       Grid.Column="0" Grid.Row="2" 
+                       FontSize="19" Margin="2" 
+                       Style="{StaticResource ButtonViewPageStyle}"/>
+                <Button x:Name="btnImage" Content="Image" 
+                       Grid.Column="1" Grid.Row="2" 
+                       FontSize="19" Margin="9 2 9 2"
+                       Style="{StaticResource ButtonViewPageStyle}"/>
+                <Button x:Name="btnDocument" Content="Document" 
+                       Grid.Column="2" Grid.Row="2" 
+                       FontSize="19" Margin="2"
+                       Style="{StaticResource ButtonViewPageStyle}"/>
+            </StackPanel>
+        </Grid>
+        <Frame Name="MainFrame" Background="Transparent" 
+               Padding="10 10 10 10"
+               NavigationUIVisibility="Hidden"
+               Grid.Row="1"/>
+        <StatusBar Height="24" Grid.Row="2" Background="Transparent">
+            <StatusBarItem HorizontalAlignment="Right">
+                <ResizeGrip Foreground="Black"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

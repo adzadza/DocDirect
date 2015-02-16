@@ -12,13 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Windows.Storage;
 
 namespace DocDirect
 {
-    public partial class MainWindow : Window
+    /// <summary>
+    /// Interaction logic for ColдectionView.xaml
+    /// </summary>
+    public partial class CollectionView : Page
     {
-        public MainWindow()
+        public CollectionView()
         {
             InitializeComponent();
         }

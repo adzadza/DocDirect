@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -64,11 +64,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AppAid.cs" />
-    <Compile Include="FilesView.xaml.cs">
-      <DependentUpon>FilesView.xaml</DependentUpon>
+    <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Navigation\IPageResolver.cs" />
+    <Compile Include="Navigation\Navigation.cs" />
+    <Compile Include="Navigation\PagesResolver.cs" />
+    <Compile Include="ViewModel\CollectionViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IViewModelResolver.cs" />
+    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelsResolver.cs" />
+    <Compile Include="Views\CollectionView.xaml.cs">
+      <DependentUpon>CollectionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ThumbnailConverter.cs" />
+    <Compile Include="Converters\SizeFileConverter.cs" />
+    <Compile Include="Converters\ThumbnailConverter.cs" />
+    <Compile Include="Models\FileModel.cs" />
+    <Compile Include="Views\HomeView.xaml.cs">
+      <DependentUpon>HomeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileTransfer.cs" />
     <Compile Include="Styles\CustomizeButtons\BackButtonStyle.xaml.cs">
       <DependentUpon>BackButtonStyle.xaml</DependentUpon>
     </Compile>
@@ -76,12 +89,15 @@
     <Compile Include="Styles\TextBoxSearch.xaml.cs">
       <DependentUpon>TextBoxSearch.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TileView.cs" />
-    <Page Include="FilesView.xaml">
+    <Page Include="Views\CollectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\HomeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -89,8 +105,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="ViewModel\FileViewModel.cs" />
+    <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Styles\CustomizeButtons\BackButtonStyle.xaml">
@@ -101,11 +120,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\TextBoxSearch.xaml">
+    <Page Include="Styles\ButtonViewPageStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\generic.xaml">
+    <Page Include="Styles\TextBoxSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -137,9 +156,17 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resourses\Images\noLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resourses\Images\symphony.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resourses\Icon\File.svg" />
+    <Content Include="Resourses\Icon\Image.svg" />
+    <Content Include="Resourses\Icon\Videos.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

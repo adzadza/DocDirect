@@ -8,7 +8,7 @@ using Windows.Storage;
 
 namespace DocDirect.ViewModel
 {
-    class FileViewModel : ViewModelBase
+    public class FileViewModel : ViewModelBase
     {
         private FileModel m_File;
 

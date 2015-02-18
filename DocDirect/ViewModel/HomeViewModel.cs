@@ -1,40 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
-using System.Linq.Expressions;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using DocDirect.ViewModel.Interface;
 using DocDirect.Commands;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Threading;
+using System;
+using Windows.Storage;
 
 namespace DocDirect.ViewModel
 {
     class HomeViewModel : ViewModelBase
     {
         #region Fields
-        private ObservableCollection<FileViewModel> _filesList { get; set; }
+        private NotifyTaskCompletion<ObservableCollection<FileViewModel>> _filesList { get; set; }
         #endregion
 
         #region Constructor
         public HomeViewModel()
         {
-            InitializetionCommand = new AsyncCommand(async () =>
-            {
-                FilesList = await Service.GetFilesAsync();
-            });
-
+            //InitializetionCommand = AsyncCommand.Create(token => Service.GetFilesAsync());
+            Initialization = InitializeAsync();
             Debugger.Break();
+        }
+        private async Task InitializeAsync()
+        {
+            _filesList = new NotifyTaskCompletion<ObservableCollection<FileViewModel>>(Service.GetFilesAsync());
+
         }
         #endregion
 
         #region Property
-        public IAsyncCommand InitializetionCommand { get; private set; }
-        public ObservableCollection<FileViewModel> FilesList { 
+        //public NotifyTaskCompletion<ObservableCollection<FileViewModel>> UrlByteCount { get; private set; }
+        //public IAsyncCommand InitializetionCommand { get; private set; }
+        public Task Initialization { get; private set; }
+        public NotifyTaskCompletion<ObservableCollection<FileViewModel>> FilesList
+        { 
             get { return _filesList; }
             set {
                 _filesList = value;
@@ -46,12 +48,11 @@ namespace DocDirect.ViewModel
 
     public static class Service
     {
-        public static async Task<ObservableCollection<FileViewModel>> GetFilesAsync(CancellationToken token = new CancellationToken())
+        public static async Task<ObservableCollection<FileViewModel>> 
+            GetFilesAsync()
         {
             Debugger.Break();
-
-            await Task.Delay(TimeSpan.FromSeconds(3), token).ConfigureAwait(false);
-
+            
             ObservableCollection<FileViewModel> filesList = new ObservableCollection<FileViewModel>();
 
             StorageFolder files = await StorageFolder.GetFolderFromPathAsync(@"D:\Doc");
@@ -68,6 +69,7 @@ namespace DocDirect.ViewModel
                 filesList.Add(new FileViewModel(p));
             }
             return filesList;
-        }        
+        }
+    
     }
 }

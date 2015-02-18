@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="navService_Navigated - тут происходит подстановка DataContext'a">
+    <Position X="4.209" Y="6.645" Height="0.75" Width="1.866" />
+  </Comment>
+  <Class Name="DocDirect.App" Collapsed="true">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.FileTransfer" Collapsed="true">
+    <Position X="17" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAACAASEAAAAAACIAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>FileTransfer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.FileModel">
+    <Position X="9" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAgAIAAIAAAAQAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Models\FileModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.CollectionView">
+    <Position X="6.5" Y="6.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\CollectionView.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.HomeView">
+    <Position X="9.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\HomeView.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.MainView">
+    <Position X="6.25" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAARAAQAAAgAgAAAAAAAAAAAAAAAAAgCBAAAAAAAA=</HashCode>
+      <FileName>Views\MainView.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.Commands.AsyncCommand&lt;TResult&gt;">
+    <Position X="2.25" Y="7" Width="1.75" />
+    <NestedTypes>
+      <Class Name="DocDirect.Commands.AsyncCommand&lt;TResult&gt;.CancelAsyncCommand" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Commands\ComandsAsync\AsyncCommand.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAEIEIAAAAAgAAAAAAAAAAIABAAAEA=</HashCode>
+      <FileName>Commands\ComandsAsync\AsyncCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DocDirect.Commands.AsyncCommand">
+    <Position X="11.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Commands\ComandsAsync\AsyncCommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.Commands.AsyncCommandBase">
+    <Position X="0.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAACAAQAAEAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Commands\ComandsAsync\AsyncCommandBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DocDirect.Commands.NotifyTaskCompletion&lt;TResult&gt;" BaseTypeListCollapsed="true">
+    <Position X="19.5" Y="1.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAGAAAAAEAAAAgAAARAgEAAABAAAEBAAAAAAQA=</HashCode>
+      <FileName>Commands\ComandsAsync\NotifyTaskCompletion.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DocDirect.Commands.RelayCommand&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="11.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAQQAEAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Commands\RelayCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DocDirect.Converters.SizeFileConverter" BaseTypeListCollapsed="true">
+    <Position X="11.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Converters\SizeFileConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DocDirect.Converters.ThumbnailConverter" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Converters\ThumbnailConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DocDirect.Navigator.Navigation.Navigation">
+    <Position X="3.25" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAABAAAAAIAEAAABAAAQAAIQAAQAAAAAEA=</HashCode>
+      <FileName>Navigation\Navigation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.Navigator.Navigation.PagesResolver" BaseTypeListCollapsed="true">
+    <Position X="14" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Navigation\PagesResolver.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DocDirect.Properties.Resources" Collapsed="true">
+    <Position X="13.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.Properties.Settings" Collapsed="true">
+    <Position X="10" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.Styles.CustomWindows.MetroWindowStyle" Collapsed="true">
+    <Position X="11.5" Y="1.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Styles\CustomizeWindows\MetroWindowStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.Styles.SearchTextBox">
+    <Position X="15.25" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Styles\TextBoxSearch.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.ViewModel.CollectionViewModel" Collapsed="true">
+    <Position X="1.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\CollectionViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.ViewModel.FileViewModel">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAIAAAAAAASAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\FileViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.ViewModel.HomeViewModel">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAIAACAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>ViewModel\HomeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.ViewModel.Service">
+    <Position X="17.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>ViewModel\HomeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.ViewModel.MainViewModel">
+    <Position X="0.75" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AaAAEAAAAAAAAAIAAAAQACACJAAEAAACAACAAiAAAIA=</HashCode>
+      <FileName>ViewModel\MainViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DocDirect.ViewModel.ViewModelBase">
+    <Position X="3.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAQAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModel\ViewModelBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DocDirect.ViewModel.ViewModelsResolver" BaseTypeListCollapsed="true">
+    <Position X="15.25" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwA=</HashCode>
+      <FileName>ViewModel\ViewModelsResolver.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="DocDirect.Commands.IAsyncCommand">
+    <Position X="17.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Commands\ComandsAsync\IAsyncCommand.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DocDirect.Navigator.Navigation.IPageResolver">
+    <Position X="17.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Navigation\IPageResolver.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DocDirect.ViewModel.Interface.IViewModelsResolver">
+    <Position X="17.5" Y="7.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>ViewModel\Interface\IViewModelResolver.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

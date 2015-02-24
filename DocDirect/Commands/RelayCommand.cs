@@ -8,28 +8,28 @@ using System.Windows.Input;
 
 namespace DocDirect.Commands
 {
-    public class RelayCommand<T> : ICommand
+    public class RelayCommand : ICommand
     {
         #region Fields
-        private readonly Action<T> m_Execute = null;
-        private readonly Predicate<object> m_CanExecute = null;
+        private readonly Action<object> _execute = null;
+        private readonly Predicate<object> _canExecute = null;
         #endregion
 
         #region Constructors
-        public RelayCommand(Action<T> execute)
+        public RelayCommand(Action<object> execute)
             : this(execute, null)
         {
         }
         
-        public RelayCommand(Action<T> execute, Predicate<object> canExecute)
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             if (execute == null)
 	        {
                 throw new ArgumentNullException("Execute");
 	        }
 
-            m_Execute = execute;
-            m_CanExecute = canExecute;
+            _execute = execute;
+            _canExecute = canExecute;
         }
 
         #endregion
@@ -39,7 +39,7 @@ namespace DocDirect.Commands
         [DebuggerStepThrough]
         public bool CanExecute(object parameter)
         {
-            return m_CanExecute == null ? true : m_CanExecute(parameter);
+            return _canExecute == null ? true : _canExecute(parameter);
         }
 
         public event EventHandler CanExecuteChanged
@@ -50,11 +50,7 @@ namespace DocDirect.Commands
 
         public void Execute(object parameter)
         {
-            if (parameter is T)
-            {
-                var typedParameter = (T)parameter;
-                m_Execute(typedParameter);
-            }
+             _execute(parameter);           
         }
 
         #endregion

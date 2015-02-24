@@ -13,9 +13,9 @@ namespace DocDirect
     {
         private string m_Name;
         private string m_Path; // full path
-        private ulong  m_Size;
+        private long  m_Size;
 
-        public FileModel(string Name, string Path, ulong Size )
+        public FileModel(string Name, string Path, long Size )
         {
             m_Name = Name;
             m_Path = Path;
@@ -31,7 +31,7 @@ namespace DocDirect
             get { return m_Name; }
             set { m_Name = value; }
         }
-        public ulong Size
+        public long Size
         {
             get { return m_Size; }
             set { m_Size = value; }

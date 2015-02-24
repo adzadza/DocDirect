@@ -67,14 +67,17 @@
                 <Button x:Name="btnMusic" Content="Musik"                        
                        Grid.Column="0" Grid.Row="2" 
                        FontSize="19" Margin="2" 
-                       Style="{StaticResource ButtonViewPageStyle}"/>
+                       Style="{StaticResource ButtonViewPageStyle}"
+                       Visibility="Collapsed"/>
                 <Button x:Name="btnImage" Content="Image" 
                        Grid.Column="1" Grid.Row="2" 
                        FontSize="19" Margin="9 2 9 2"
+                       Visibility="Collapsed"
                        Style="{StaticResource ButtonViewPageStyle}"/>
                 <Button x:Name="btnDocument" Content="Document" 
                        Grid.Column="2" Grid.Row="2" 
                        FontSize="19" Margin="2"
+                       Visibility="Collapsed"
                        Style="{StaticResource ButtonViewPageStyle}"/>
             </StackPanel>
         </Grid>

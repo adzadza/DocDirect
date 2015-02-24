@@ -76,7 +76,7 @@ namespace DocDirect.Navigator.Navigation
                 return;
             }
 
-            page.DataContext = e.ExtraData;
+            page.DataContext = e.ExtraData;            
         }
 
         #endregion

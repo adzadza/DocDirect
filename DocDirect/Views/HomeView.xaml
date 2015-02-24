@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DocDirect.Converters"
+      xmlns:asyncCommands="clr-namespace:DocDirect.Commands"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
 	  Title="HomeView">
@@ -12,60 +13,82 @@
         <local:SizeFileConverter x:Key="SizeConverter"/>
         <local:ThumbnailConverter x:Key="ThumbnailConvert"/>
 
-        <GridView x:Key="GridView">
-            <GridView.Columns>
-                <GridViewColumn Header="Name">
-                    <GridViewColumn.CellTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Image Source="{Binding Path=Path, Converter={StaticResource ThumbnailConvert}}"
-                                       Height="20" Width="20" Grid.Column="0" Margin="2"/>
-                                <TextBlock Text="{Binding Path=Name}" Grid.Column="1"/>
-                            </Grid>
-                        </DataTemplate>
-                    </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-                <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Size, Converter={StaticResource SizeConverter}}"/>
-
-            </GridView.Columns>
-        </GridView>
+        <Style x:Key="HeaderColum" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
     </Page.Resources>
 
     <Grid Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="7*"/>
-            <ColumnDefinition/>
-            <ColumnDefinition x:Name="columProp" Width="3*" MaxWidth="150"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="m_gv" Background="Transparent" 
-                  Grid.Row="1" Grid.Column="0"
-                  View="{StaticResource GridView}"
-                  ItemsSource="{Binding FilesList}"
-                  Padding="5 7 5 7"/>
+        <Grid x:Name="ListFile" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="list" Text="List:" Grid.Row="0" 
+                       Style="{StaticResource HeaderColum}"/>
+            <ListView x:Name="m_gv" Grid.Row="1"  Background="Red"    
+                      ItemsSource="{Binding FilesList}"
+                      Style="{StaticResource ListViewStyle}"
+                      Margin="10"> 
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="5">
+                        <StackPanel VerticalAlignment="Top" Orientation="Horizontal" Background="Transparent">
+                            <Image Source="{Binding Path=Path, Converter={StaticResource ThumbnailConvert}}"
+                                           Height="20" Width="20" Margin="2"/>
+                            <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center" Margin="2"/>
+                        </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        
+        <GridSplitter Grid.Column="1" 
+                      HorizontalAlignment="Center" 
+                      VerticalAlignment="Stretch" Width="2" Margin="4"
+                      Background="Blue"/>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="2"/>
-
-        <Grid Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"
+        <Grid x:Name="Propertis" Grid.Column="2" VerticalAlignment="Center"
               Margin="7">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="100"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Label x:Name="labelProperties" Content="Properties" Grid.Row="0"/>
+            <TextBlock x:Name="properties" Text="Properties" Grid.Row="0" 
+                       Style="{StaticResource HeaderColum}"/>
+            
             <Image x:Name="imageThumb" Grid.Row="1" 
-                   Width="{Binding ElementName=columProp, Path=Width}"
-                   Height="80"/>
+                   Width="100"
+                   Height="80">
+            </Image>
             <TextBlock x:Name="NameFile" Grid.Row="2"/>
         </Grid>
+        
+        <GridSplitter Grid.Column="3" 
+                      HorizontalAlignment="Center" 
+                      VerticalAlignment="Stretch" Width="2" Margin="4"
+                      Background="Blue"/>
+        
+        <Grid x:Name="Action" Grid.Column="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="action" Text="Action:" Grid.Row="0" 
+                       Style="{StaticResource HeaderColum}"/>
+        </Grid>
+
     </Grid>
 </Page>

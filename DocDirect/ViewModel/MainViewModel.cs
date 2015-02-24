@@ -21,50 +21,40 @@ namespace DocDirect.ViewModel
         #endregion
 
         #region Filds
-        private ICommand m_goToHomePage;
-        private ICommand m_goToCollectionPage;
-        private ICommand m_CloseWindowCommand;
+        private ICommand _goToHomePage;
+        private ICommand _goToCollectionPage;
 
-        private INotifyPropertyChanged m_homeChangeViewModel;
-        private INotifyPropertyChanged m_collectionChangeViewModel;
+        private INotifyPropertyChanged _homeChangeViewModel;
+        private INotifyPropertyChanged _collectionChangeViewModel;
         #endregion
 
         #region Properties
         public ICommand GoToHomePage
         {
-            get { return m_goToHomePage; }
+            get { return _goToHomePage; }
             set
             {
-                m_goToHomePage = value;
+                _goToHomePage = value;
                 OnPropertyChanged("GoToHomePage");
             }
         }
         public ICommand GoToCollectionPage
         {
-            get { return m_goToCollectionPage; }
+            get { return _goToCollectionPage; }
             set
             {
-                m_goToCollectionPage = value;
+                _goToCollectionPage = value;
                 OnPropertyChanged("GoToCollectionPage");
             }
         }
-        public ICommand CloseWindowCommand
-        {
-            get { return m_CloseWindowCommand; }
-            set
-            {
-                m_CloseWindowCommand = value;
-                OnPropertyChanged("CloseWindowCommand");
-            }
-        }
-
+        
         public INotifyPropertyChanged HomeViewModel
         {
-            get { return m_homeChangeViewModel; }
+            get { return _homeChangeViewModel; }
         }
         public INotifyPropertyChanged CollectionViewModel
         {
-            get { return m_collectionChangeViewModel; }
+            get { return _collectionChangeViewModel; }
         }
         #endregion
 
@@ -73,32 +63,29 @@ namespace DocDirect.ViewModel
         {
             m_resolver = resolver;
 
-            m_homeChangeViewModel = m_resolver.GetViewModelInstance(m_HomeViewModelAlias);
-            m_collectionChangeViewModel = m_resolver.GetViewModelInstance(m_CollectionViewModelAlias);
+            _homeChangeViewModel = m_resolver.GetViewModelInstance(m_HomeViewModelAlias);
+            _collectionChangeViewModel = m_resolver.GetViewModelInstance(m_CollectionViewModelAlias);
 
             InitializeCommands();
+
+            GoToHomePage.Execute(null);
         }
         private void InitializeCommands()
         {
-            GoToHomePage = new RelayCommand<INotifyPropertyChanged>(GoToHomePageCommandExecute);
-            GoToCollectionPage = new RelayCommand<INotifyPropertyChanged>(GoToCollectionPageCommandExecute);
-            //CloseWindowCommand = new RelayCommand<>(CloseWindowCommand);
+            GoToHomePage = new RelayCommand(param => this.GoToHomePageCommandExecute());
+            GoToCollectionPage = new RelayCommand(param => this.GoToCollectionPageCommandExecute());
         }
         #endregion 
 
-        private void GoToHomePageCommandExecute(INotifyPropertyChanged viewModel)
+        private void GoToHomePageCommandExecute()
         {
             Navigation.Navigate(Navigation.m_HomePageAlias, HomeViewModel);
         }
 
-        private void GoToCollectionPageCommandExecute(INotifyPropertyChanged viewModel)
+        private void GoToCollectionPageCommandExecute()
         {
             Navigation.Navigate(Navigation.m_CollectionPageAlias, CollectionViewModel);
         }
 
-        //private void CloseWindowCommand(object target, ExecutedRoutedEventArgs e)
-        //{
-        //    SystemCommands.CloseWindow(this);
-        //}
     }
 }

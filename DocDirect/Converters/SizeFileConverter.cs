@@ -12,7 +12,7 @@ namespace DocDirect.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((ulong)value / 1024).ToString() + " KB";
+            return ((long)value / 1024).ToString() + " KB";
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

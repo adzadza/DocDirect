@@ -68,11 +68,7 @@
     <Compile Include="Navigation\IPageResolver.cs" />
     <Compile Include="Navigation\Navigation.cs" />
     <Compile Include="Navigation\PagesResolver.cs" />
-    <Compile Include="Commands\ComandsAsync\AsyncCommand.cs" />
-    <Compile Include="Commands\ComandsAsync\AsyncCommandBase.cs" />
     <Compile Include="ViewModel\CollectionViewModel.cs" />
-    <Compile Include="Commands\ComandsAsync\IAsyncCommand.cs" />
-    <Compile Include="Commands\ComandsAsync\NotifyTaskCompletion.cs" />
     <Compile Include="ViewModel\Interface\IViewModelResolver.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelsResolver.cs" />
@@ -93,6 +89,10 @@
     <Compile Include="Styles\TextBoxSearch.xaml.cs">
       <DependentUpon>TextBoxSearch.xaml</DependentUpon>
     </Compile>
+    <Page Include="Styles\ListViewStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CollectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -151,7 +151,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
+    <None Include="Diagram\DocDirect.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

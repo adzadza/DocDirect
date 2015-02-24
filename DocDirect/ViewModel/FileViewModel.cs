@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocDirect.Commands;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace DocDirect.ViewModel
                 OnPropertyChanged("Name");
             }
         }
-        public ulong Size
+        public long Size
         {
             get { return m_File.Size; }
             set { 

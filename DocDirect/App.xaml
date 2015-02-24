@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="Styles/CustomizeButtons/BackButtonStyle.xaml"/>
                 <ResourceDictionary Source="Styles/TextBoxSearch.xaml"/>
                 <ResourceDictionary Source="Styles/ButtonViewPageStyle.xaml"/>
+                <ResourceDictionary Source="Styles/ListViewStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

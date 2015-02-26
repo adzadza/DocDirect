@@ -13,8 +13,7 @@ namespace DocDirect.Navigator.Navigation
 
         public PagesResolver()
         {
-            m_PageResolver.Add(Navigation.m_HomePageAlias, () => new HomeView());
-            m_PageResolver.Add(Navigation.m_CollectionPageAlias, () => new CollectionView());
+            m_PageResolver.Add(Navigation.m_HomePageAlias, () => new FilesList());
         }
 
         public Page GetPageInstance(string alias)

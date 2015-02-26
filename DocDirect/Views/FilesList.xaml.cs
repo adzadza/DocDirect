@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,17 +14,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Windows.Storage;
+using Windows.Storage.FileProperties;
+using Windows.Storage.Streams;
 
 namespace DocDirect
 {
-    /// <summary>
-    /// Interaction logic for ColдectionView.xaml
-    /// </summary>
-    public partial class CollectionView : Page
+    public partial class FilesList : Page
     {
-        public CollectionView()
+        public FilesList()
         {
             InitializeComponent();
-        }
+        }        
     }
 }

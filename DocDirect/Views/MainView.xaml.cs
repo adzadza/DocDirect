@@ -64,7 +64,7 @@ namespace DocDirect
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Navigation.Service = MainFrame.NavigationService;
+            Navigation.Service = FilesFrame.NavigationService;
             DataContext = new MainViewModel(new ViewModelsResolver());
         }
         private void StackPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

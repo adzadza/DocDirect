@@ -2,44 +2,26 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     x:Class="DocDirect.Styles.CustomWindows.MetroWindowStyle">
     
-    <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="#EFEFF2" />
-    <SolidColorBrush x:Key="WindowBorderBrush" Color="#007ACC" />
-    <SolidColorBrush x:Key="WindowBorderBrushInactive" Color="#999999" />
-    <SolidColorBrush x:Key="WindowStatusForeground" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="WindowStatusForegroundInactive" Color="#FFFFFF" />
-    <SolidColorBrush x:Key="LightGray" Color="#595959" />
-
-    <Color x:Key="WindowBackgroundColor">White</Color>
-    <Color x:Key="HighlightColor">#FF3F3F41</Color>
-    <Color x:Key="BlueColor">#FF007ACC</Color>
-    <Color x:Key="ForegroundColor">#FFF4F4F5</Color>
-
-    <SolidColorBrush x:Key="WindowBackgroundColorBrush" Color="{StaticResource WindowBackgroundColor}"/>
-    <SolidColorBrush x:Key="HighlightColorBrush" Color="{StaticResource HighlightColor}"/>
-    <SolidColorBrush x:Key="BlueColorBrush" Color="{StaticResource BlueColor}"/>
-    <SolidColorBrush x:Key="ForegroundColorBrush" Color="{StaticResource ForegroundColor}"/>
-
-    <BitmapImage x:Key="Logo" UriSource="pack://application:,,,/Resourses/Images/noLogo.png"/>
-    <ImageBrush x:Key="NoizeBackground" ImageSource="pack://application:,,,/Resourses/Images/symphony.png" 
-                TileMode="Tile" Viewport="0,0,400,400"
-                ViewboxUnits="Absolute"/>
-    
-    <Style x:Key="WindowStyleTitleBarButton" TargetType="{x:Type Button}">        
-        <Setter Property="Foreground" Value="{StaticResource LightGray}"/>
+    <SolidColorBrush x:Key="WindowCaptionColorBrush" Color="#007ACC"/>
+    <SolidColorBrush x:Key="WindowBorderColorBrush" Color="#ADADAD"/>
+    <SolidColorBrush x:Key="TitleBarButtonColorBrush" Color="#007ACC"/>
+        
+    <Style x:Key="WindowStyleTitleBarButton" TargetType="{x:Type Button}">
+        <Setter Property="Foreground" Value="White"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Grid>
-                        <Border x:Name="PART_border" Background="Transparent"/>
+                        <Border x:Name="PART_border" Background="{StaticResource TitleBarButtonColorBrush}"/>
                         <ContentPresenter />
                     </Grid>
-                    <ControlTemplate.Triggers>                       
+                    <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="Opacity" Value="0.5"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PART_border" Property="Opacity" Value="1" />
-                            <Setter Property="Foreground" Value="Blue"/>
+                            <Setter Property="Opacity" Value="0.7" />
+                            <Setter Property="Background" Value="Red"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -48,17 +30,15 @@
     </Style>
 
     <Style x:Key="MetroWindowStyle" TargetType="{x:Type Window}">
-        <Setter Property="Foreground" Value="{DynamicResource ForegroundColorBrush}"/>
-        <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}"/>
         <Setter Property="ResizeMode" Value="CanResizeWithGrip" />
         <Setter Property="UseLayoutRounding" Value="True" />
-        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
         <Setter Property="WindowChrome.WindowChrome">            
             <Setter.Value>
                 <WindowChrome
                     GlassFrameThickness="0"
                     ResizeBorderThickness="2"
-                    CaptionHeight="32"    
+                    CaptionHeight="46"    
                     CornerRadius="0"
                     UseAeroCaptionButtons="False"               
                 />
@@ -68,95 +48,44 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">                    
-                    <Border Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}" 
-                            Background="{StaticResource WindowBackgroundColorBrush}"
-                            BorderBrush="BlueViolet">
+                    <Border Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
                         <Grid x:Name="LayoutRoot" TextOptions.TextRenderingMode="ClearType">
-                            <Border x:Name="PART_Border" BorderThickness="1">
+                            <Border x:Name="PART_Border" 
+                                    BorderThickness="0" 
+                                    Background="White">
                                 <DockPanel 
                                     HorizontalAlignment="Stretch" 
-                                    Background="Transparent" 
                                     VerticalAlignment="Stretch">                                    
                                     <Border 
                                         x:Name="Titlebar" 
                                         DockPanel.Dock="Top" 
-                                        Background="{StaticResource WindowBackgroundColorBrush}"
-                                        BorderThickness="0">
-                                        <Grid Height="32" ShowGridLines="True">
+                                        Background="{StaticResource WindowCaptionColorBrush}"
+                                        BorderThickness="0"
+                                        Margin="-1,-1,-1,0">
+                                        <Grid Height="46" ShowGridLines="True">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="36"/>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="110"/>
-                                                <ColumnDefinition Width="55"/>
-                                                <ColumnDefinition Width="20"/>
-                                                <ColumnDefinition Width="20"/>
-                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="24"/>
+                                                <ColumnDefinition Width="24"/>
+                                                <ColumnDefinition Width="24"/>
                                             </Grid.ColumnDefinitions>
-                                            <Image x:Name="img_login"                                            
-                                                Grid.Column="3"
-                                                Source="{StaticResource Logo}" 
-                                                HorizontalAlignment="Left"
-                                                Margin="0 0 10 0"
-                                                Width="32"
-                                                Height="32"                                               
-                                                WindowChrome.IsHitTestVisibleInChrome="True"
-                                            />                                            
-                                            <StackPanel Grid.Column="1" Orientation="Horizontal" 
-                                                        HorizontalAlignment="Right" Margin="0 0 30 0"
-                                                        TextOptions.TextRenderingMode="ClearType"
-                                                        TextOptions.TextFormattingMode="Display">
-                                                <Label x:Name="Settings"                                               
+                                            <TextBlock x:Name="NameApp" Text="DocDirect" Grid.Column="0" 
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="White"
                                                        FontFamily="Segoe UI"
-                                                       FontWeight="Bold" 
-                                                       Foreground="{StaticResource LightGray}"
-                                                       FontSize="9"
-                                                       Content="SETTINGS  |"
-                                                       MouseUp="SettingsMouseUp"
-                                                       WindowChrome.IsHitTestVisibleInChrome="True"
-                                                />
-                                                <Label x:Name="Hellp"    
-                                                       Margin="-8 0 0 0"   
-                                                       FontFamily="Segoe UI"
-                                                       FontWeight="Bold" 
-                                                       Foreground="{StaticResource LightGray}"
-                                                       FontSize="9"
-                                                       Content=" HELLP"
-                                                       WindowChrome.IsHitTestVisibleInChrome="True"
-                                                />
-                                            </StackPanel>
-                                            <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right" 
-                                                        TextOptions.TextRenderingMode="ClearType"
-                                                        TextOptions.TextFormattingMode="Display">
-                                                <Label x:Name="SignIn"   
-                                                       Margin="0 0 10 0"
-                                                       FontFamily="Segoe UI"
-                                                       FontWeight="Bold" 
-                                                       Foreground="Black"
-                                                       FontSize="11"
-                                                       Content="SIGN IN"
-                                                       WindowChrome.IsHitTestVisibleInChrome="True"
-                                                />
-                                                <Label x:Name="CreateNewAccount"    
-                                                       Margin="0 -7 0 0"   
-                                                       FontFamily="Segoe UI"
-                                                       FontWeight="SemiBold" 
-                                                       Foreground="{StaticResource LightGray}"
-                                                       FontSize="9"
-                                                       Content="CREATE NEW ACCOUNT"
-                                                       HorizontalAlignment="Right"
-                                                       WindowChrome.IsHitTestVisibleInChrome="True"
-                                                />
-                                            </StackPanel>
+                                                       FontWeight="Medium"
+                                                       FontSize="20"/>
                                             <Button x:Name="MinButton"   
                                                     Command="{Binding Source={x:Static SystemCommands.MinimizeWindowCommand}}" 
                                                     ToolTip="Minimize"
-                                                    Grid.Column="4"
-                                                    VerticalAlignment="Top"
+                                                    Grid.Column="1"
+                                                    VerticalAlignment="Center"
                                                     Width="20"
                                                     Height="26"
                                                     Style="{StaticResource WindowStyleTitleBarButton}"
                                                     WindowChrome.IsHitTestVisibleInChrome="True">
-                                                <Grid MaxHeight="9" MaxWidth="9">
+                                                <Grid MaxHeight="10" MaxWidth="10">
                                                     <Path
                                                     Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                                     StrokeThickness="1"
@@ -169,14 +98,14 @@
                                             <Button x:Name="Maximize"
                                                     Command="{Binding Source={x:Static SystemCommands.MaximizeWindowCommand}}"
                                                     ToolTip="Maximaze"
-                                                    Grid.Column="5"                                                 
-                                                    VerticalAlignment="Top"
+                                                    Grid.Column="2"                                                 
+                                                    VerticalAlignment="Center"
                                                     Width="20"
                                                     Height="26"
                                                     Style="{StaticResource WindowStyleTitleBarButton}"
                                                     WindowChrome.IsHitTestVisibleInChrome="True"
                                                 >
-                                                <Grid MaxHeight="9" MaxWidth="9">
+                                                <Grid MaxHeight="10" MaxWidth="10">
                                                     <Path
                                                     x:Name="PART_MaxButton_Path"
                                                     Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
@@ -190,14 +119,14 @@
                                             <Button x:Name="Restore"
                                                     Command="{Binding Source={x:Static SystemCommands.RestoreWindowCommand}}"
                                                     ToolTip="Maximaze"
-                                                    Grid.Column="5"                                                 
-                                                    VerticalAlignment="Top"
+                                                    Grid.Column="2"                                                 
+                                                    VerticalAlignment="Center"
                                                     Width="20"
                                                     Height="26"
                                                     Style="{StaticResource WindowStyleTitleBarButton}"
                                                     WindowChrome.IsHitTestVisibleInChrome="True"
                                                 >
-                                                <Grid MaxHeight="9" MaxWidth="9">
+                                                <Grid MaxHeight="10" MaxWidth="10">
                                                     <Path
                                                     x:Name="PART_Restore_Button_Path"
                                                     Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
@@ -208,17 +137,16 @@
                                                     />
                                                 </Grid>
                                             </Button>
-
                                             <Button x:Name="CloseButton" 
-                                                Grid.Column="6"                                                
-                                                VerticalAlignment="Top"
+                                                Grid.Column="3"                                                
+                                                VerticalAlignment="Center"
                                                 Width="20"
                                                 Height="26"
                                                 Style="{StaticResource WindowStyleTitleBarButton}"
                                                 Command="{Binding Source={x:Static SystemCommands.CloseWindowCommand}}"
                                                 ToolTip="Cloze"    
                                                 WindowChrome.IsHitTestVisibleInChrome="True">
-                                                <Grid MaxHeight="9" MaxWidth="10">
+                                                <Grid MaxHeight="10" MaxWidth="10">
                                                     <Path
                                                     Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                                     StrokeThickness="1.5"
@@ -232,7 +160,7 @@
                                     <ContentPresenter />
                                 </DockPanel>
                             </Border>
-                            <Border BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1"
+                            <Border BorderBrush="{StaticResource WindowBorderColorBrush}" BorderThickness="0"
                                     Visibility="{Binding IsActive, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">                                
                             </Border>
                         </Grid>
@@ -249,7 +177,7 @@
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="ResizeMode" Value="CanResizeWithGrip" />
+                                <Condition Property="ResizeMode" Value="CanResizeWithGrip"/>
                                 <Condition Property="WindowState" Value="Normal" />
                             </MultiTrigger.Conditions>
                         </MultiTrigger>

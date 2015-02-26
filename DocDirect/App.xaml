@@ -7,10 +7,10 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/CustomizeWindows/MetroWindowStyle.xaml"/>
-                <ResourceDictionary Source="Styles/CustomizeButtons/BackButtonStyle.xaml"/>
                 <ResourceDictionary Source="Styles/TextBoxSearch.xaml"/>
                 <ResourceDictionary Source="Styles/ButtonViewPageStyle.xaml"/>
                 <ResourceDictionary Source="Styles/ListViewStyle.xaml"/>
+                <ResourceDictionary Source="Styles/ButtonStyleDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

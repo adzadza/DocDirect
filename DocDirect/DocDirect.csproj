@@ -72,32 +72,29 @@
     <Compile Include="ViewModel\Interface\IViewModelResolver.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelsResolver.cs" />
-    <Compile Include="Views\CollectionView.xaml.cs">
-      <DependentUpon>CollectionView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Converters\SizeFileConverter.cs" />
     <Compile Include="Converters\ThumbnailConverter.cs" />
     <Compile Include="Models\FileModel.cs" />
-    <Compile Include="Views\HomeView.xaml.cs">
-      <DependentUpon>HomeView.xaml</DependentUpon>
+    <Compile Include="Views\FilesList.xaml.cs">
+      <DependentUpon>FilesList.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileTransfer.cs" />
-    <Compile Include="Styles\CustomizeButtons\BackButtonStyle.xaml.cs">
-      <DependentUpon>BackButtonStyle.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Styles\CustomizeWindows\MetroWindowStyle.cs" />
     <Compile Include="Styles\TextBoxSearch.xaml.cs">
       <DependentUpon>TextBoxSearch.xaml</DependentUpon>
     </Compile>
+    <Page Include="Styles\ButtonStyleDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\CustomizeWindows\MetroWindowStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Styles\ListViewStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CollectionView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\HomeView.xaml">
+    <Page Include="Views\FilesList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -116,14 +113,6 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Styles\CustomizeButtons\BackButtonStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\CustomizeWindows\MetroWindowStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Styles\ButtonViewPageStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -162,12 +151,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resourses\Images\noLogo.png" />
+    <Folder Include="Resourses\Images\" />
+    <Folder Include="Styles\CustomizeButtons\" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resourses\Images\symphony.png" />
-  </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Resourses\Icon\File.svg" />
     <Content Include="Resourses\Icon\Image.svg" />

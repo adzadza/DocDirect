@@ -21,8 +21,8 @@
         
         <Grid Grid.Column="0" Background="#252935" Margin="0 -46 0 0" ShowGridLines="True">
             <Grid.RowDefinitions>
-                <RowDefinition Height="24"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="48"/>
                 <RowDefinition Height="80"/>
                 <RowDefinition Height="70"/>
             </Grid.RowDefinitions>

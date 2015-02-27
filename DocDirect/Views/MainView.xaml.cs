@@ -11,7 +11,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
-using DocDirect.Navigator.Navigation;
 using DocDirect.ViewModel;
 
 namespace DocDirect
@@ -64,13 +63,7 @@ namespace DocDirect
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Navigation.Service = FilesFrame.NavigationService;
-            DataContext = new MainViewModel(new ViewModelsResolver());
-        }
-        private void StackPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            Button control = e.Source as Button;
-            control.Opacity = 1;
+            DataContext = new MainViewModel();
         }
     }
 }

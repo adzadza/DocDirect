@@ -65,13 +65,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
-    <Compile Include="Navigation\IPageResolver.cs" />
-    <Compile Include="Navigation\Navigation.cs" />
-    <Compile Include="Navigation\PagesResolver.cs" />
-    <Compile Include="ViewModel\CollectionViewModel.cs" />
-    <Compile Include="ViewModel\Interface\IViewModelResolver.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelsResolver.cs" />
     <Compile Include="Converters\SizeFileConverter.cs" />
     <Compile Include="Converters\ThumbnailConverter.cs" />
     <Compile Include="Models\FileModel.cs" />

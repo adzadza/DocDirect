@@ -1,5 +1,4 @@
-﻿using DocDirect.ViewModel.Interface;
-using DocDirect.Commands;
+﻿using DocDirect.Commands;
 using System.Collections.ObjectModel;
 using System.IO;
 using System;
@@ -17,7 +16,7 @@ namespace DocDirect.ViewModel
         #region Constructor
         public HomeViewModel()
         {
-            DirectoryInfo directory = new DirectoryInfo(@"d:\Doc");
+            DirectoryInfo directory = new DirectoryInfo(@"D:\Doc");
 
             _filesList = new ObservableCollection<FileViewModel>();
             try

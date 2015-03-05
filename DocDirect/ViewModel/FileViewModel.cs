@@ -11,35 +11,43 @@ namespace DocDirect.ViewModel
 {
     public class FileViewModel : ViewModelBase
     {
-        private FileModel m_File;
+        private FileModel _file;
 
         public FileViewModel(FileModel file)
         {
-            this.m_File = file;
+            this._file = file;
         }
 
         public String Path
         {
-            get { return m_File.Path; }
+            get { return _file.Path; }
             set {
-                m_File.Path = value;
+                _file.Path = value;
                 OnPropertyChanged("Path");
             }
         }
         public String Name
         {
-            get { return m_File.Name; }
+            get { return _file.Name; }
             set { 
-                m_File.Name = value;
+                _file.Name = value;
                 OnPropertyChanged("Name");
             }
         }
         public long Size
         {
-            get { return m_File.Size; }
+            get { return _file.Size; }
             set { 
-                m_File.Size = value;
+                _file.Size = value;
                 OnPropertyChanged("Size");
+            }
+        }
+        public string FileType
+        {
+            get { return _file.FileType; }
+            set { 
+                _file.FileType = value;
+                OnPropertyChanged("FileType");
             }
         }
     }

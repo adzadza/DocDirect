@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using DocDirect.ViewModel;
+using DocDirect.Navigator.Navigation;
 
 namespace DocDirect
 {
@@ -63,7 +64,8 @@ namespace DocDirect
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = new MainViewModel();
+            Navigation.Service = FilesFrame.NavigationService;
+            DataContext = new MainViewModel(new ViewModelsResolver());
         }
     }
 }

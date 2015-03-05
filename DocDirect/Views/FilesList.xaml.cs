@@ -25,6 +25,16 @@ namespace DocDirect
         public FilesList()
         {
             InitializeComponent();
+        }
+
+        private void btnThumbnailViewFile_Click(object sender, RoutedEventArgs e)
+        {
+            listViewFiles.View = (ViewBase)this.FindResource("ImageView");
+        }
+
+        private void btnTileViewFile_Click(object sender, RoutedEventArgs e)
+        {
+            listViewFiles.View = (ViewBase)this.FindResource("GridView");
         }        
     }
 }

@@ -11,30 +11,37 @@ namespace DocDirect
 {
     public class FileModel
     {
-        private string m_Name;
-        private string m_Path; // full path
-        private long  m_Size;
+        private string _Name;
+        private string _Path; // full path
+        private long  _Size;
+        private string _fileType;
 
-        public FileModel(string Name, string Path, long Size )
+        public FileModel(string Name, string Path, long Size, string FileType)
         {
-            m_Name = Name;
-            m_Path = Path;
-            m_Size = Size;
+            _Name = Name;
+            _Path = Path;
+            _Size = Size;
+            _fileType = FileType;
         }
         public String Path
         {
-            get { return m_Path; }
-            set { m_Path = value; }
+            get { return _Path; }
+            set { _Path = value; }
         }
         public String Name
         {
-            get { return m_Name; }
-            set { m_Name = value; }
+            get { return _Name; }
+            set { _Name = value; }
         }
         public long Size
         {
-            get { return m_Size; }
-            set { m_Size = value; }
+            get { return _Size; }
+            set { _Size = value; }
+        }
+        public string FileType
+        {
+            get { return _fileType; }
+            set { _fileType = value; }
         }
     }
 

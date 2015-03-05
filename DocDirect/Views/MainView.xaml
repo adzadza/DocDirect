@@ -15,7 +15,6 @@
         
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="78"/>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
@@ -29,16 +28,13 @@
             <Button x:Name="logoUser" Grid.Row="1" Style="{StaticResource ButtonLogoUser}"/>
             <Button x:Name="fileTransfer" Grid.Row="2" Style="{StaticResource ButtonFileTransfer}"/>
         </Grid>
-        
-        <ListView x:Name="Clients" Height="Auto" Width="220" 
-                  Grid.Column="1" Grid.Row="0"/>
-        
+                
         <Frame Name="FilesFrame" Background="Transparent" 
                BorderThickness="1"
                BorderBrush="#767676"
-               Padding="10 10 10 10"
                NavigationUIVisibility="Hidden"
                Grid.Row="0"
-               Grid.Column="2"/>
+               Grid.Column="1">            
+        </Frame>
     </Grid>
 </Window>

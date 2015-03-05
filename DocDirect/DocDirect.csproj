@@ -65,10 +65,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Navigation\IPageResolver.cs" />
+    <Compile Include="Navigation\Navigation.cs" />
+    <Compile Include="Navigation\PagesResolver .cs" />
+    <Compile Include="Themes\TileView.cs" />
+    <Compile Include="ViewModel\Interface\IViewModelsResolver.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Converters\SizeFileConverter.cs" />
     <Compile Include="Converters\ThumbnailConverter.cs" />
     <Compile Include="Models\FileModel.cs" />
+    <Compile Include="ViewModel\ViewModelsResolver.cs" />
     <Compile Include="Views\FilesList.xaml.cs">
       <DependentUpon>FilesList.xaml</DependentUpon>
     </Compile>
@@ -88,6 +94,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FilesList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -101,7 +111,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModel\FileViewModel.cs" />
-    <Compile Include="ViewModel\HomeViewModel.cs" />
+    <Compile Include="ViewModel\FilesListViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -145,13 +155,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resourses\Images\" />
     <Folder Include="Styles\CustomizeButtons\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resourses\Icon\File.svg" />
     <Content Include="Resourses\Icon\Image.svg" />
     <Content Include="Resourses\Icon\Videos.svg" />
+    <Resource Include="Resourses\Images\list_file.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

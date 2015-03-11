@@ -5,19 +5,25 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:con="clr-namespace:DocDirect.Converters"
       xmlns:local="clr-namespace:DocDirect.ThemesList"
+      xmlns:commands="clr-namespace:DocDirect.Commands.SelectedItem"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
 	  Title="FilesListView">
 
     <Page.Resources>
         <con:SizeFileConverter x:Key="SizeConverter"/>
         <con:ThumbnailConverter x:Key="ThumbnailConvert"/>
+        <con:NameFileConverter x:Key="NameConverter"/>
 
         <local:TileView x:Key="ImageView">
             <local:TileView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Width="150" VerticalAlignment="Top">
-                        <Image Source="{Binding Path=Path, Converter={StaticResource ThumbnailConvert}}" Height="60" Width="70"></Image>
-                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" Text="{Binding Path=Name}" ></TextBlock>
+                        <Image Source="{Binding Path=Path, Converter={StaticResource ThumbnailConvert}}" 
+                               Height="60" Width="70">                            
+                        </Image>
+                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" 
+                                   Text="{Binding Path=Name, Converter={StaticResource NameConverter}}">                            
+                        </TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </local:TileView.ItemTemplate>
@@ -28,9 +34,18 @@
                 <GridViewColumn Header="Name" >
                     <GridViewColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Width="200" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
-                                <Image Source="{Binding Path=Path, Converter={StaticResource ThumbnailConvert}}" Height="20" Width="20"></Image>
-                                <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" Text="{Binding Path=Name}"></TextBlock>
+                            <StackPanel Width="200" Orientation="Horizontal">
+                                <Image Source="{Binding Path=Path, Converter={StaticResource ThumbnailConvert}}" 
+                                       Height="24" Width="24"
+                                       Margin="2 2 4 0">                                    
+                                </Image>
+                                <TextBlock TextWrapping="Wrap" 
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Text="{Binding Path=Name, Converter={StaticResource NameConverter}}"
+                                           FontSize="14"
+                                           FontFamily="Segoe UI">                                    
+                                </TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
@@ -47,6 +62,7 @@
         </Grid.RowDefinitions>
         
         <ListView x:Name="listViewFiles" Grid.Row="0"  
+                  commands:Selected.Command="{Binding SelectedFileCommand}"
                   ItemsSource="{Binding FilesList}"
                   View="{StaticResource GridView}"                  
                   Margin="2">
@@ -54,18 +70,35 @@
         
         <Grid x:Name="itemsGrid" Grid.Row="1" ShowGridLines="True" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
             
-            <Button x:Name="btnThumbnailViewFile" Grid.Column="2"
-                    Margin="5"
+            <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Label x:Name="countItemNum" Content="{Binding CountItem, Mode=OneWay}"
+                       Margin="0 0 -4 0"
+                       FontFamily="Segoe UI"
+                       FontSize="16"/>
+                <Label x:Name="item" Content="items"
+                       FontFamily="Segoe UI"
+                       FontSize="16"/>
+                <Label Content="|" FontSize="17"/>                
+            </StackPanel>
+
+            <Label x:Name="SizeCurrentFile" Grid.Column="1"
+                    Content="{Binding CurrentSelectedFile, Mode=OneWay}"
+                    FontFamily="Segoe UI"
+                    FontSize="16"/>
+            
+            <Button x:Name="btnThumbnailViewFile" Grid.Column="3"
+                    Margin="0"
                     Style="{StaticResource ThumbnailViewFile}"
                     Click="btnThumbnailViewFile_Click"/>
-            <Button x:Name="btnTileViewFile" Grid.Column="3"
-                    Margin="0 0 0 0"
+            <Button x:Name="btnTileViewFile" Grid.Column="4"
+                    Margin="0"
                     Style="{StaticResource TileViewFile}"
                     Click="btnTileViewFile_Click"/>
         </Grid>

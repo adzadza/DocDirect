@@ -29,12 +29,12 @@ namespace DocDirect
 
         private void btnThumbnailViewFile_Click(object sender, RoutedEventArgs e)
         {
-            listViewFiles.View = (ViewBase)this.FindResource("ImageView");
+            listViewFiles.View = this.FindResource("ImageView") as ViewBase;
         }
 
         private void btnTileViewFile_Click(object sender, RoutedEventArgs e)
         {
-            listViewFiles.View = (ViewBase)this.FindResource("GridView");
+            listViewFiles.View = this.FindResource("GridView") as ViewBase;
         }        
     }
 }

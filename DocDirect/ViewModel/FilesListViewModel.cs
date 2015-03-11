@@ -6,25 +6,33 @@ using System.Windows.Input;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
+using Microsoft.Practices.Composite.Presentation.Commands;
 
 namespace DocDirect.ViewModel
 {
     class FilesListViewModel : ViewModelBase
     {
         #region Fields
-        private ObservableCollection<FileViewModel> _filesList;
+        private ObservableCollection<FileViewModel> _filesList = new ObservableCollection<FileViewModel>();
+        private string _sizeSelectedFile="";
+        private ulong  _countItem = 0;
+        private string _pathToWorkDictionary = @"D:\Doc";
         #endregion
 
         #region Constructor
         public FilesListViewModel()
         {
-            _filesList = new ObservableCollection<FileViewModel>();
             _filesList = GetFiles();
+
+            InitialisCommands();
         }
 
         private void InitialisCommands()
         {
-            //_thumbnailViewCommand = new RelayCommand(ViewThumbnailListFiles);
+            SelectedFileCommand = new DelegateCommand<FileViewModel>(obj => 
+            {
+                CurrentSelectedFile = "1 item selected " + ConverterSize(obj.Size);
+            });
         }
         #endregion
 
@@ -37,21 +45,39 @@ namespace DocDirect.ViewModel
                 OnPropertyChanged("FilesList");
             }
         }
-        
-        public ICommand ThumbnailViewCommand
+        public string CurrentSelectedFile
         {
-            get { return _thumbnailViewCommand; }
+            get { return _sizeSelectedFile; }
             set
             {
-                _thumbnailViewCommand = value;
-                OnPropertyChanged("ThumbnailViewCommand");
+                if(_sizeSelectedFile!=value)
+                {
+                    _sizeSelectedFile = value;
+                    OnPropertyChanged("CurrentSelectedFile");
+                }
             }
         }
+        public ulong CountItem
+        {
+            get { return _countItem; }
+            set { 
+                _countItem = value;
+                OnPropertyChanged("CountItem");
+            }
+        }        
         #endregion
 
         #region Commands
-        private ICommand _thumbnailViewCommand;
-
+        public ICommand ThumbnailViewCommand
+        {
+            get;
+            private set;
+        }
+        public ICommand SelectedFileCommand
+        {
+            get;
+            private set;
+        }
         #endregion
 
         #region Method
@@ -89,7 +115,7 @@ namespace DocDirect.ViewModel
 
         private ObservableCollection<FileViewModel> GetFiles()
         {
-            DirectoryInfo directory = new DirectoryInfo(@"D:\Doc");
+            DirectoryInfo directory = new DirectoryInfo(_pathToWorkDictionary);
 
             ObservableCollection<FileViewModel> filesList = new ObservableCollection<FileViewModel>();
             try
@@ -102,7 +128,7 @@ namespace DocDirect.ViewModel
                         file.Length,
                         GetFileType(file.Extension)
                     );
-
+                    _countItem++;
                     filesList.Add(new FileViewModel(modelFile));
                 }
             }
@@ -114,6 +140,16 @@ namespace DocDirect.ViewModel
             return filesList;
         }
         
+        private string ConverterSize(long size)
+        {
+            if (size < 1024) return size.ToString() + " KBit";
+            else
+                if (size > 1024 && size < 1048576) return (size / 1024).ToString() + " KB";
+                else
+                    if (size > 1048576 && size < 1073741824) return (size / 1048576).ToString() + " MB";
+                    else
+                        return (size / 1073741824).ToString() + " GB";
+        }
         #endregion
     }
 }

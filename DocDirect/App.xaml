@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Styles/ButtonViewPageStyle.xaml"/>
                 <ResourceDictionary Source="Styles/ListViewStyle.xaml"/>
                 <ResourceDictionary Source="Styles/ButtonStyleDictionary.xaml"/>
+                <ResourceDictionary Source="Styles/SliderThumbStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

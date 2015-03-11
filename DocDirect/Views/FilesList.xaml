@@ -64,7 +64,8 @@
         <ListView x:Name="listViewFiles" Grid.Row="0"  
                   commands:Selected.Command="{Binding SelectedFileCommand}"
                   ItemsSource="{Binding FilesList}"
-                  View="{StaticResource GridView}"                  
+                  View="{StaticResource GridView}"       
+                  
                   Margin="2">
         </ListView>
         

@@ -122,7 +122,6 @@ namespace DocDirect.ViewModel
             {
                 foreach (var file in directory.EnumerateFiles("*", SearchOption.AllDirectories))
                 {
-                    //file.GetType
                     var modelFile = new FileModel(
                         file.Name,
                         file.FullName,

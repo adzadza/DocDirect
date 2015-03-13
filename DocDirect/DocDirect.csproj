@@ -91,10 +91,6 @@
     <Compile Include="Styles\TextBoxSearch.xaml.cs">
       <DependentUpon>TextBoxSearch.xaml</DependentUpon>
     </Compile>
-    <Page Include="Resourses\Icon\IconDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Styles\ButtonStyleDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -276,6 +272,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resourses\Images\list_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resourses\Icon\send_file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resourses\Icon\DocIcon\access.png" />
+    <Resource Include="Resourses\Icon\DocIcon\excal.png" />
+    <Resource Include="Resourses\Icon\DocIcon\powerpoint.png" />
+    <Resource Include="Resourses\Icon\DocIcon\sharepoint.png" />
+    <Resource Include="Resourses\Icon\DocIcon\word.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resourses\Icon\DocIcon\audio.png" />
+    <Resource Include="Resourses\Icon\DocIcon\image.png" />
+    <Resource Include="Resourses\Icon\DocIcon\pdf.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

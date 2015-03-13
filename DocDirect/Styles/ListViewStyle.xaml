@@ -16,7 +16,7 @@
                 <ControlTemplate TargetType="ListView">
                     <Border Name="Border" BorderThickness="1" 
                             Background="Transparent"
-                            BorderBrush="Transparent">
+                            BorderBrush="Red">
                         <ScrollViewer>
                             <ItemsPresenter />
                         </ScrollViewer>

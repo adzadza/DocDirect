@@ -4,7 +4,7 @@
 
     <SolidColorBrush x:Key="SearchTextBox_SearchIconBorder" Color="White" />
     <SolidColorBrush x:Key="SearchTextBox_SearchIconBackground" Color="White" />
-    <SolidColorBrush x:Key="SearchIconCollor" Color="#BEBEBE"/>   
+    <SolidColorBrush x:Key="SearchIconCollor" Color="#000000"/>   
     <SolidColorBrush x:Key="TextSearch" Color="#8A8A8A"/>
     <SolidColorBrush x:Key="BorderSearchBox" Color="#BEBEBE"/>
 

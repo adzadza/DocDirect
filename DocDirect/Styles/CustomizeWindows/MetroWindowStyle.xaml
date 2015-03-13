@@ -2,10 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     x:Class="DocDirect.Styles.CustomWindows.MetroWindowStyle">
     
-    <SolidColorBrush x:Key="WindowCaptionColorBrush" Color="#007ACC"/>
+    <!--<SolidColorBrush x:Key="WindowCaptionColorBrush" Color="#007ACC"/>
     <SolidColorBrush x:Key="WindowBorderColorBrush" Color="#ADADAD"/>
-    <SolidColorBrush x:Key="TitleBarButtonColorBrush" Color="#007ACC"/>
-        
+    <SolidColorBrush x:Key="TitleBarButtonColorBrush" Color="#007ACC"/>-->
+
+    <SolidColorBrush x:Key="WindowCaptionColorBrush" Color="#FF9984"/>
+    <SolidColorBrush x:Key="WindowBorderColorBrush" Color="#FF9984"/> <!--что это?-->
+    <SolidColorBrush x:Key="TitleBarButtonColorBrush" Color="#FF9984"/>
+
     <Style x:Key="WindowStyleTitleBarButton" TargetType="{x:Type Button}">
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Template">
@@ -62,7 +66,7 @@
                                         Background="{StaticResource WindowCaptionColorBrush}"
                                         BorderThickness="0"
                                         Margin="-1,-1,-1,0">
-                                        <Grid Height="46" ShowGridLines="True">
+                                        <Grid Height="46" ShowGridLines="False">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="24"/>

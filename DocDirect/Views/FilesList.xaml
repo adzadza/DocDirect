@@ -53,7 +53,7 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="{Binding Path=Extension, Converter={StaticResource GridIconConverter}}" 
-                                       Height="28" Width="28"
+                                       Height="34" Width="34"
                                        Margin="10 2 4 0">                                    
                                 </Image>
                                 <TextBlock 
@@ -127,7 +127,7 @@
                   Margin="2">
         </ListView>
         
-        <Grid x:Name="itemsGrid" Grid.Row="1" ShowGridLines="True" VerticalAlignment="Center">
+        <Grid x:Name="itemsGrid" Grid.Row="1" ShowGridLines="False" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="Auto"/>

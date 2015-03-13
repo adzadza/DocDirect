@@ -50,5 +50,22 @@ namespace DocDirect.ViewModel
                 OnPropertyChanged("FileType");
             }
         }
+        public DateTime LastAccessTime
+        {
+            get { return _file.LastAccessTime; }
+            set {
+                _file.LastAccessTime = value;
+                OnPropertyChanged("LastAccessTime");
+            }
+        }
+        public string Extension
+        {
+            get { return _file.Extension; }
+            set
+            {
+                _file.Extension = value;
+                OnPropertyChanged("Extension");
+            }
+        }
     }
 }

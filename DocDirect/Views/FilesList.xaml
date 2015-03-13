@@ -10,47 +10,105 @@
 	  Title="FilesListView">
 
     <Page.Resources>
+        <SolidColorBrush x:Key="OrangeSoftAmber" Color="#CDBFAC"/>
+        
         <con:SizeFileConverter x:Key="SizeConverter"/>
         <con:ThumbnailConverter x:Key="ThumbnailConvert"/>
+        <con:GridIconConverter x:Key="GridIconConverter"/>
         <con:NameFileConverter x:Key="NameConverter"/>
-
-        <local:TileView x:Key="ImageView">
+        
+        <local:TileView x:Key="ImageView">            
             <local:TileView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Width="150" VerticalAlignment="Top">
-                        <Image Source="{Binding Path=Path, Converter={StaticResource ThumbnailConvert}}" 
-                               Height="60" Width="70">                            
-                        </Image>
-                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" 
-                                   Text="{Binding Path=Name, Converter={StaticResource NameConverter}}">                            
-                        </TextBlock>
-                    </StackPanel>
+                    <Border x:Name="PART_Border" 
+                            BorderThickness="1"
+                            BorderBrush="Transparent">
+                        <Grid Width="150" VerticalAlignment="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Image x:Name="PART_Image" Source="{Binding Path=Path, Converter={StaticResource ThumbnailConvert}}" 
+                                   Grid.Row="0" Height="70" Width="100">                            
+                            </Image>
+                            <TextBlock x:Name="PART_Text" TextWrapping="Wrap" HorizontalAlignment="Center"
+                                       Grid.Row="1" Text="{Binding Path=Name, Converter={StaticResource NameConverter}}">                            
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                    <DataTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_Text" Property="Background" Value="{StaticResource OrangeSoftAmber}"/>
+                        </Trigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </local:TileView.ItemTemplate>
         </local:TileView>
 
-        <GridView x:Key="GridView">
+        <GridView x:Key="GridView" 
+                  ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}"> 
             <GridView.Columns>
-                <GridViewColumn Header="Name" >
+                <GridViewColumn Header="Details View" Width="350">
                     <GridViewColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Width="200" Orientation="Horizontal">
-                                <Image Source="{Binding Path=Path, Converter={StaticResource ThumbnailConvert}}" 
-                                       Height="24" Width="24"
-                                       Margin="2 2 4 0">                                    
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding Path=Extension, Converter={StaticResource GridIconConverter}}" 
+                                       Height="28" Width="28"
+                                       Margin="10 2 4 0">                                    
                                 </Image>
-                                <TextBlock TextWrapping="Wrap" 
+                                <TextBlock 
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
                                            Text="{Binding Path=Name, Converter={StaticResource NameConverter}}"
-                                           FontSize="14"
+                                           FontSize="15"
+                                           Margin="8 0 0 0"
+                                           Foreground="Black"
                                            FontFamily="Segoe UI">                                    
                                 </TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
                 </GridViewColumn>
-                <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Size, Converter={StaticResource SizeConverter}}" />
+                <GridViewColumn Header="Data" Width="200">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock Text="{Binding Path=LastAccessTime}" 
+                                           FontFamily="Segoe UI"
+                                           FontSize="15"
+                                           Foreground="Black"
+                                           HorizontalAlignment="Center">                                    
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Header="Type" Width="120">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding Path=FileType}" 
+                                           FontSize="15" FontFamily="Segoe UI"
+                                           Foreground="Black"
+                                           HorizontalAlignment="Center">                                    
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Header="Size" Width="110">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock Text="{Binding Path=Size, Converter={StaticResource SizeConverter}}" 
+                                           FontSize="15" FontFamily="Segoe UI"
+                                           Foreground="Black"
+                                           HorizontalAlignment="Center">                                    
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
             </GridView.Columns>
         </GridView>
     </Page.Resources>
@@ -64,8 +122,8 @@
         <ListView x:Name="listViewFiles" Grid.Row="0"  
                   commands:Selected.Command="{Binding SelectedFileCommand}"
                   ItemsSource="{Binding FilesList}"
-                  View="{StaticResource GridView}"       
-                  
+                  View="{StaticResource GridView}" 
+                  Background="#F2F4F7"
                   Margin="2">
         </ListView>
         
@@ -85,8 +143,7 @@
                        FontSize="16"/>
                 <Label x:Name="item" Content="items"
                        FontFamily="Segoe UI"
-                       FontSize="16"/>
-                <Label Content="|" FontSize="17"/>                
+                       FontSize="16"/>              
             </StackPanel>
 
             <Label x:Name="SizeCurrentFile" Grid.Column="1"

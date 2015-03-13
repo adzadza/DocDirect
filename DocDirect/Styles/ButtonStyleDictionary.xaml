@@ -4,6 +4,7 @@
     <SolidColorBrush x:Key="MouseOverColor" Color="#007ACC"/>
     
     <Style x:Key="ButtonLogoUser" TargetType="Button">
+        <Setter Property="ToolTip" Value="Logo"/>
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -42,6 +43,7 @@
 
     <Style x:Key="ButtonFileTransfer" TargetType="Button">
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="ToolTip" Value="FileTransfer"/>
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -71,6 +73,7 @@
     </Style>
 
     <Style x:Key="TileViewFile" TargetType="Button">
+        <Setter Property="ToolTip" Value="Tile View"/>
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -92,7 +95,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Button.IsMouseOver" Value="True">
-                            
+                            <Setter TargetName="button_1" Property="Fill" Value="{StaticResource MouseOverColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -101,6 +104,7 @@
     </Style>
 
     <Style x:Key="ThumbnailViewFile" TargetType="Button">
+        <Setter Property="ToolTip" Value="Thumbnail View"/>
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -124,7 +128,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Button.IsMouseOver" Value="True">
-
+                            <Setter TargetName="button_1" Property="Fill" Value="{StaticResource MouseOverColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

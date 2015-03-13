@@ -73,6 +73,7 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\Selected.cs" />
     <Compile Include="Converters\NameFileConverter.cs" />
+    <Compile Include="Converters\GridIconConverter.cs" />
     <Compile Include="Navigation\IPageResolver.cs" />
     <Compile Include="Navigation\Navigation.cs" />
     <Compile Include="Navigation\PagesResolver .cs" />
@@ -90,6 +91,10 @@
     <Compile Include="Styles\TextBoxSearch.xaml.cs">
       <DependentUpon>TextBoxSearch.xaml</DependentUpon>
     </Compile>
+    <Page Include="Resourses\Icon\IconDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\ButtonStyleDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -166,11 +171,110 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="Resourses\Icon\File.svg" />
-    <Content Include="Resourses\Icon\Image.svg" />
-    <Content Include="Resourses\Icon\Videos.svg" />
+    <Resource Include="Resourses\Icon\IconGrid\3gp.png" />
+    <Resource Include="Resourses\Icon\IconGrid\7z.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ace.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ai.png" />
+    <Resource Include="Resourses\Icon\IconGrid\aif.png" />
+    <Resource Include="Resourses\Icon\IconGrid\aiff.png" />
+    <Resource Include="Resourses\Icon\IconGrid\amr.png" />
+    <Resource Include="Resourses\Icon\IconGrid\asf.png" />
+    <Resource Include="Resourses\Icon\IconGrid\asx.png" />
+    <Resource Include="Resourses\Icon\IconGrid\avi.png" />
+    <Resource Include="Resourses\Icon\IconGrid\bat.png" />
+    <Resource Include="Resourses\Icon\IconGrid\bin.png" />
+    <Resource Include="Resourses\Icon\IconGrid\bmp.png" />
+    <Resource Include="Resourses\Icon\IconGrid\bup.png" />
+    <Resource Include="Resourses\Icon\IconGrid\cab.png" />
+    <Resource Include="Resourses\Icon\IconGrid\cbr.png" />
+    <Resource Include="Resourses\Icon\IconGrid\cda.png" />
+    <Resource Include="Resourses\Icon\IconGrid\cdl.png" />
+    <Resource Include="Resourses\Icon\IconGrid\cdr.png" />
+    <Resource Include="Resourses\Icon\IconGrid\chm.png" />
+    <Resource Include="Resourses\Icon\IconGrid\dat.png" />
+    <Resource Include="Resourses\Icon\IconGrid\divx.png" />
+    <Resource Include="Resourses\Icon\IconGrid\dll.png" />
+    <Resource Include="Resourses\Icon\IconGrid\dmg.png" />
+    <Resource Include="Resourses\Icon\IconGrid\doc.png" />
+    <Resource Include="Resourses\Icon\IconGrid\docx.png" />
+    <Resource Include="Resourses\Icon\IconGrid\dss.png" />
+    <Resource Include="Resourses\Icon\IconGrid\dvf.png" />
+    <Resource Include="Resourses\Icon\IconGrid\dwg.png" />
+    <Resource Include="Resourses\Icon\IconGrid\eml.png" />
+    <Resource Include="Resourses\Icon\IconGrid\eps.png" />
+    <Resource Include="Resourses\Icon\IconGrid\exe.png" />
+    <Resource Include="Resourses\Icon\IconGrid\fla.png" />
+    <Resource Include="Resourses\Icon\IconGrid\flv.png" />
+    <Resource Include="Resourses\Icon\IconGrid\gif.png" />
+    <Resource Include="Resourses\Icon\IconGrid\gz.png" />
+    <Resource Include="Resourses\Icon\IconGrid\hqx.png" />
+    <Resource Include="Resourses\Icon\IconGrid\htm.png" />
+    <Resource Include="Resourses\Icon\IconGrid\html.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ifo.png" />
+    <Resource Include="Resourses\Icon\IconGrid\indd.png" />
+    <Resource Include="Resourses\Icon\IconGrid\iso.png" />
+    <Resource Include="Resourses\Icon\IconGrid\jar.png" />
+    <Resource Include="Resourses\Icon\IconGrid\jpeg.png" />
+    <Resource Include="Resourses\Icon\IconGrid\jpg.png" />
+    <Resource Include="Resourses\Icon\IconGrid\lnk.png" />
+    <Resource Include="Resourses\Icon\IconGrid\log.png" />
+    <Resource Include="Resourses\Icon\IconGrid\m4a.png" />
+    <Resource Include="Resourses\Icon\IconGrid\m4b.png" />
+    <Resource Include="Resourses\Icon\IconGrid\m4p.png" />
+    <Resource Include="Resourses\Icon\IconGrid\m4v.png" />
+    <Resource Include="Resourses\Icon\IconGrid\mcd.png" />
+    <Resource Include="Resourses\Icon\IconGrid\mdb.png" />
+    <Resource Include="Resourses\Icon\IconGrid\mid.png" />
+    <Resource Include="Resourses\Icon\IconGrid\mov.png" />
+    <Resource Include="Resourses\Icon\IconGrid\mp2.png" />
+    <Resource Include="Resourses\Icon\IconGrid\mp3.png" />
+    <Resource Include="Resourses\Icon\IconGrid\mp4.png" />
+    <Resource Include="Resourses\Icon\IconGrid\mpeg.png" />
+    <Resource Include="Resourses\Icon\IconGrid\mpg.png" />
+    <Resource Include="Resourses\Icon\IconGrid\msi.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ogg.png" />
+    <Resource Include="Resourses\Icon\IconGrid\pdf.png" />
+    <Resource Include="Resourses\Icon\IconGrid\png.png" />
+    <Resource Include="Resourses\Icon\IconGrid\pps.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ppt.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ps.png" />
+    <Resource Include="Resourses\Icon\IconGrid\psd.png" />
+    <Resource Include="Resourses\Icon\IconGrid\pst.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ptb.png" />
+    <Resource Include="Resourses\Icon\IconGrid\pub.png" />
+    <Resource Include="Resourses\Icon\IconGrid\qbb.png" />
+    <Resource Include="Resourses\Icon\IconGrid\qbw.png" />
+    <Resource Include="Resourses\Icon\IconGrid\qxd.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ram.png" />
+    <Resource Include="Resourses\Icon\IconGrid\rar.png" />
+    <Resource Include="Resourses\Icon\IconGrid\rm.png" />
+    <Resource Include="Resourses\Icon\IconGrid\rmvb.png" />
+    <Resource Include="Resourses\Icon\IconGrid\rtf.png" />
+    <Resource Include="Resourses\Icon\IconGrid\sea.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ses.png" />
+    <Resource Include="Resourses\Icon\IconGrid\sit.png" />
+    <Resource Include="Resourses\Icon\IconGrid\sitx.png" />
+    <Resource Include="Resourses\Icon\IconGrid\sql.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ss.png" />
+    <Resource Include="Resourses\Icon\IconGrid\swf.png" />
+    <Resource Include="Resourses\Icon\IconGrid\tgz.png" />
+    <Resource Include="Resourses\Icon\IconGrid\tif.png" />
+    <Resource Include="Resourses\Icon\IconGrid\torrent.png" />
+    <Resource Include="Resourses\Icon\IconGrid\ttf.png" />
+    <Resource Include="Resourses\Icon\IconGrid\txt.png" />
+    <Resource Include="Resourses\Icon\IconGrid\vcd.png" />
+    <Resource Include="Resourses\Icon\IconGrid\vob.png" />
+    <Resource Include="Resourses\Icon\IconGrid\wav.png" />
+    <Resource Include="Resourses\Icon\IconGrid\wma.png" />
+    <Resource Include="Resourses\Icon\IconGrid\wmv.png" />
+    <Resource Include="Resourses\Icon\IconGrid\wpd.png" />
+    <Resource Include="Resourses\Icon\IconGrid\wps.png" />
+    <Resource Include="Resourses\Icon\IconGrid\xls.png" />
+    <Resource Include="Resourses\Icon\IconGrid\xtm.png" />
+    <Resource Include="Resourses\Icon\IconGrid\zip.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resourses\Images\list_file.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

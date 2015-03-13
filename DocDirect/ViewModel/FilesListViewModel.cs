@@ -31,7 +31,7 @@ namespace DocDirect.ViewModel
         {
             SelectedFileCommand = new DelegateCommand<FileViewModel>(obj => 
             {
-                CurrentSelectedFile = "1 item selected " + ConverterSize(obj.Size);
+                CurrentSelectedFile = "  1 item selected " + ConverterSize(obj.Size);
             });
         }
         #endregion
@@ -99,7 +99,7 @@ namespace DocDirect.ViewModel
         }
         private bool isDocument(string fileType)
         {
-            string pattern = "(.doc)|(.docx)";
+            string pattern = "(.doc)|(.docx)|(.pdf)";
             return Regex.IsMatch(fileType, pattern, RegexOptions.IgnoreCase);
         }
         private bool isVideo(string fileType)
@@ -122,11 +122,14 @@ namespace DocDirect.ViewModel
             {
                 foreach (var file in directory.EnumerateFiles("*", SearchOption.AllDirectories))
                 {
+                    //file.GetType
                     var modelFile = new FileModel(
                         file.Name,
                         file.FullName,
                         file.Length,
-                        GetFileType(file.Extension)
+                        GetFileType(file.Extension),
+                        file.LastAccessTime,
+                        file.Extension
                     );
                     _countItem++;
                     filesList.Add(new FileViewModel(modelFile));

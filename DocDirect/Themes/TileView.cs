@@ -39,6 +39,7 @@ namespace DocDirect.ThemesList
         protected override object ItemContainerDefaultStyleKey
         {
             get { return new ComponentResourceKey(GetType(), "TileViewItem"); }
-        }       
+        }
+ 
     }
 }

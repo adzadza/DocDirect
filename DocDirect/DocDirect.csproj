@@ -72,6 +72,7 @@
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\Selected.cs" />
+    <Compile Include="Converters\BackgroundConverter.cs" />
     <Compile Include="Converters\NameFileConverter.cs" />
     <Compile Include="Converters\GridIconConverter.cs" />
     <Compile Include="Navigation\IPageResolver.cs" />
@@ -277,16 +278,32 @@
     <Resource Include="Resourses\Icon\send_file.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resourses\Icon\DocIcon\access.png" />
-    <Resource Include="Resourses\Icon\DocIcon\excal.png" />
-    <Resource Include="Resourses\Icon\DocIcon\powerpoint.png" />
-    <Resource Include="Resourses\Icon\DocIcon\sharepoint.png" />
-    <Resource Include="Resourses\Icon\DocIcon\word.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resourses\Icon\DocIcon\audio.png" />
-    <Resource Include="Resourses\Icon\DocIcon\image.png" />
+    <Resource Include="Resourses\Icon\DocIcon\avi.png" />
+    <Resource Include="Resourses\Icon\DocIcon\bmp.png" />
+    <Resource Include="Resourses\Icon\DocIcon\css.png" />
+    <Resource Include="Resourses\Icon\DocIcon\docx.png" />
+    <Resource Include="Resourses\Icon\DocIcon\gif.png" />
+    <Resource Include="Resourses\Icon\DocIcon\html.png" />
+    <Resource Include="Resourses\Icon\DocIcon\jpeg.png" />
+    <Resource Include="Resourses\Icon\DocIcon\mov.png" />
+    <Resource Include="Resourses\Icon\DocIcon\mp3.png" />
+    <Resource Include="Resourses\Icon\DocIcon\mpeg.png" />
     <Resource Include="Resourses\Icon\DocIcon\pdf.png" />
+    <Resource Include="Resourses\Icon\DocIcon\png.png" />
+    <Resource Include="Resourses\Icon\DocIcon\pptx.png" />
+    <Resource Include="Resourses\Icon\DocIcon\pptx_1.png" />
+    <Resource Include="Resourses\Icon\DocIcon\psd.png" />
+    <Resource Include="Resourses\Icon\DocIcon\pst.png" />
+    <Resource Include="Resourses\Icon\DocIcon\pub.png" />
+    <Resource Include="Resourses\Icon\DocIcon\rar.png" />
+    <Resource Include="Resourses\Icon\DocIcon\read.png" />
+    <Resource Include="Resourses\Icon\DocIcon\text.png" />
+    <Resource Include="Resourses\Icon\DocIcon\tiff.png" />
+    <Resource Include="Resourses\Icon\DocIcon\url.png" />
+    <Resource Include="Resourses\Icon\DocIcon\wav.png" />
+    <Resource Include="Resourses\Icon\DocIcon\wma.png" />
+    <Resource Include="Resourses\Icon\DocIcon\wmv.png" />
+    <Resource Include="Resourses\Icon\DocIcon\zip.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

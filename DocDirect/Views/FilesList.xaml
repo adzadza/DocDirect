@@ -10,7 +10,6 @@
 	  Title="FilesListView">
 
     <Page.Resources>
-        <SolidColorBrush x:Key="OrangeSoftAmber" Color="#CDBFAC"/>
         
         <con:SizeFileConverter x:Key="SizeConverter"/>
         <con:ThumbnailConverter x:Key="ThumbnailConvert"/>
@@ -44,7 +43,7 @@
                 </DataTemplate>
             </local:TileView.ItemTemplate>
         </local:TileView>
-
+        
         <GridView x:Key="GridView" 
                   ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}"> 
             <GridView.Columns>
@@ -123,6 +122,8 @@
                   commands:Selected.Command="{Binding SelectedFileCommand}"
                   ItemsSource="{Binding FilesList}"
                   View="{StaticResource GridView}" 
+                  ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                  Style="{StaticResource ListViewStyle}"
                   Background="#F2F4F7"
                   Margin="2">
         </ListView>

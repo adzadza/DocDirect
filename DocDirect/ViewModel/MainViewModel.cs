@@ -15,13 +15,20 @@ namespace DocDirect.ViewModel
     {
         #region Constant
         public static readonly string _filesListViewModelAlias = "FilesListPageVM";
+        public static readonly string _aboutViewModelAlias = "AboutViewPageVM";
+        public static readonly string _clientInformationModelAlias = "ClientInformationPageVM";
 
         private readonly IViewModelsResolver _resolver;
         #endregion Constant End
 
         #region Filds
         private ICommand _goToFilesListPage;
+        private ICommand _goAboutViewPage;
+        private ICommand _goClientInforamation;
+
         private INotifyPropertyChanged _filesListChangedViewModel;
+        private INotifyPropertyChanged _aboutViewChangedViewModel;
+        private INotifyPropertyChanged _clientInforamationChangedViewModel;
         #endregion
 
         #region Properties   
@@ -34,10 +41,36 @@ namespace DocDirect.ViewModel
                 OnPropertyChanged("GoToFilesList");
             }
         }
+        public ICommand GoAboutView
+        {
+            get { return _goAboutViewPage; }
+            set
+            {
+                _goAboutViewPage = value;
+                OnPropertyChanged("GoAboutView");
+            }
+        }
+        public ICommand GoClientInforamation
+        {
+            get { return _goClientInforamation; }
+            set
+            {
+                _goClientInforamation = value;
+                OnPropertyChanged("GoClientInforamation");
+            }
+        }
 
-        INotifyPropertyChanged FilesList
+        public INotifyPropertyChanged FilesList
         {
             get { return _filesListChangedViewModel; }
+        }
+        public INotifyPropertyChanged AboutView
+        {
+            get { return _aboutViewChangedViewModel; }
+        }
+        public INotifyPropertyChanged ClientInforamation
+        {
+            get { return _clientInforamationChangedViewModel; }
         }
         #endregion
 
@@ -46,15 +79,22 @@ namespace DocDirect.ViewModel
         {
             _resolver = resolver;
 
-            _filesListChangedViewModel = _resolver.GetViewModelInstance(_filesListViewModelAlias);
-
+            InitializeNotifyPropertyChanged();
             InitializeCommands();
 
             GoToFilesList.Execute(null);
         }
+        private void InitializeNotifyPropertyChanged()
+        {
+            _filesListChangedViewModel = _resolver.GetViewModelInstance(_filesListViewModelAlias);
+            _aboutViewChangedViewModel = _resolver.GetViewModelInstance(_aboutViewModelAlias);
+            _clientInforamationChangedViewModel = _resolver.GetViewModelInstance(_clientInformationModelAlias);
+        }
         private void InitializeCommands()
         {
             GoToFilesList = new RelayCommand(param => this.GoToFilesListPageCommandExecute());
+            GoAboutView = new RelayCommand(param => this.GoToAboutViewPageCommandExecute());
+            GoClientInforamation = new RelayCommand(param => this.GoToClientInformationPageCommandExecute());
         }
         #endregion 
 
@@ -63,5 +103,14 @@ namespace DocDirect.ViewModel
             Navigation.Navigate(Navigation._filesListAlias, FilesList);
         }
 
+        private void GoToAboutViewPageCommandExecute()
+        {
+            Navigation.Navigate(Navigation._aboutViewAlias, AboutView);
+        }
+
+        private void GoToClientInformationPageCommandExecute()
+        {
+            Navigation.Navigate(Navigation._clientInforamationViewAlias, ClientInforamation);
+        }
     }
 }

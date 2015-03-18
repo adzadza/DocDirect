@@ -85,6 +85,12 @@
     <Compile Include="Converters\ThumbnailConverter.cs" />
     <Compile Include="Models\FileModel.cs" />
     <Compile Include="ViewModel\ViewModelsResolver.cs" />
+    <Compile Include="Views\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ClientInformation.xaml.cs">
+      <DependentUpon>ClientInformation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FilesList.xaml.cs">
       <DependentUpon>FilesList.xaml</DependentUpon>
     </Compile>
@@ -112,6 +118,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ClientInformation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FilesList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -131,10 +145,6 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Styles\ButtonViewPageStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Styles\TextBoxSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -284,7 +294,7 @@
     <Resource Include="Resourses\Icon\DocIcon\docx.png" />
     <Resource Include="Resourses\Icon\DocIcon\gif.png" />
     <Resource Include="Resourses\Icon\DocIcon\html.png" />
-    <Resource Include="Resourses\Icon\DocIcon\jpeg.png" />
+    <Resource Include="Resourses\Icon\DocIcon\jpg.png" />
     <Resource Include="Resourses\Icon\DocIcon\mov.png" />
     <Resource Include="Resourses\Icon\DocIcon\mp3.png" />
     <Resource Include="Resourses\Icon\DocIcon\mpeg.png" />
@@ -297,7 +307,7 @@
     <Resource Include="Resourses\Icon\DocIcon\pub.png" />
     <Resource Include="Resourses\Icon\DocIcon\rar.png" />
     <Resource Include="Resourses\Icon\DocIcon\read.png" />
-    <Resource Include="Resourses\Icon\DocIcon\text.png" />
+    <Resource Include="Resourses\Icon\DocIcon\txt.png" />
     <Resource Include="Resourses\Icon\DocIcon\tiff.png" />
     <Resource Include="Resourses\Icon\DocIcon\url.png" />
     <Resource Include="Resourses\Icon\DocIcon\wav.png" />

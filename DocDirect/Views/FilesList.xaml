@@ -6,11 +6,9 @@
       xmlns:con="clr-namespace:DocDirect.Converters"
       xmlns:local="clr-namespace:DocDirect.ThemesList"
       xmlns:commands="clr-namespace:DocDirect.Commands.SelectedItem"
-      xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-	  Title="FilesListView">
+      xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase">
 
-    <Page.Resources>
-        
+    <Page.Resources>        
         <con:SizeFileConverter x:Key="SizeConverter"/>
         <con:ThumbnailConverter x:Key="ThumbnailConvert"/>
         <con:GridIconConverter x:Key="GridIconConverter"/>
@@ -126,6 +124,19 @@
                   Style="{StaticResource ListViewStyle}"
                   Background="#F2F4F7"
                   Margin="2">
+
+            <ListView.ContextMenu>
+                <ContextMenu x:Name="FileEdit" StaysOpen="True" Background="WhiteSmoke">
+                    <ContextMenu.BitmapEffect>
+                        <BitmapEffectGroup/>
+                    </ContextMenu.BitmapEffect>
+                    <MenuItem Header="Open" Name="openFile"
+                              Command="{Binding}"/>
+                    <MenuItem Header="Remove" Name="removeFile"
+                              Command="{Binding}"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+            
         </ListView>
         
         <Grid x:Name="itemsGrid" Grid.Row="1" ShowGridLines="False" VerticalAlignment="Center">
@@ -138,7 +149,7 @@
             </Grid.ColumnDefinitions>
             
             <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">
-                <Label x:Name="countItemNum" Content="{Binding CountItem, Mode=OneWay}"
+                <Label x:Name="countItemNum" Content="{Binding CountItem}"
                        Margin="0 0 -4 0"
                        FontFamily="Segoe UI"
                        FontSize="16"/>
@@ -148,7 +159,7 @@
             </StackPanel>
 
             <Label x:Name="SizeCurrentFile" Grid.Column="1"
-                    Content="{Binding CurrentSelectedFile, Mode=OneWay}"
+                    Content="{Binding CurrentSelectedFile}"
                     FontFamily="Segoe UI"
                     FontSize="16"/>
             
@@ -156,6 +167,7 @@
                     Margin="0"
                     Style="{StaticResource ThumbnailViewFile}"
                     Click="btnThumbnailViewFile_Click"/>
+            
             <Button x:Name="btnTileViewFile" Grid.Column="4"
                     Margin="0"
                     Style="{StaticResource TileViewFile}"

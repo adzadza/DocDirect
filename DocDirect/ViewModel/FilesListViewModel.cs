@@ -29,10 +29,13 @@ namespace DocDirect.ViewModel
 
         private void InitialisCommands()
         {
-            SelectedFileCommand = new DelegateCommand<FileViewModel>(obj => 
+            this.SelectedFileCommand = new DelegateCommand<FileViewModel>(obj => 
             {
                 CurrentSelectedFile = "  1 item selected " + ConverterSize(obj.Size);
             });
+
+            this.ContextMenuOpenFile = new RelayCommand(param => this.OpenFileCommand(param));
+            this.ContextMenuRemoveFile = new RelayCommand(param => this.RemoveFileCommand(param));
         }
         #endregion
 
@@ -74,6 +77,17 @@ namespace DocDirect.ViewModel
             private set;
         }
         public ICommand SelectedFileCommand
+        {
+            get;
+            private set;
+        }
+
+        public ICommand ContextMenuOpenFile
+        { 
+            get; 
+            private set; 
+        }
+        public ICommand ContextMenuRemoveFile
         {
             get;
             private set;
@@ -151,7 +165,18 @@ namespace DocDirect.ViewModel
                     if (size > 1048576 && size < 1073741824) return (size / 1048576).ToString() + " MB";
                     else
                         return (size / 1073741824).ToString() + " GB";
-        }
+        }       
         #endregion
+
+        #region Handler Command
+        private void OpenFileCommand(object param)
+        {
+
+        }
+        private void RemoveFileCommand(object param)
+        {
+
+        }
+        #endregion End Handler Command
     }
 }

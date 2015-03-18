@@ -12,6 +12,8 @@ namespace DocDirect.Navigator.Navigation
     {
         #region Constant
         public static readonly string _filesListAlias = "FilesListView";
+        public static readonly string _aboutViewAlias = "AboutView";
+        public static readonly string _clientInforamationViewAlias = "ClientInforamationView";
         #endregion
 
         #region Filds

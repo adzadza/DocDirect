@@ -1,0 +1,31 @@
+﻿<Page x:Class="DocDirect.ClientInformation"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	  Title="ClientInformation">
+    
+    <Grid ShowGridLines="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120"/>
+            <RowDefinition Height="350"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Vertical" 
+                    Background="#FFDECC">
+            <TextBlock Text="Your account" 
+                       FontFamily="Segoe UI" FontSize="40" Foreground="#FFFFFF" FontWeight="Bold"
+                       Margin="30 30 0 0">
+            </TextBlock>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Image Source="C://Users/rjkz1_000/Pictures/wilde.jpg" Width="500" Margin="20">
+            </Image>
+            
+            <TextBlock Text="Information">
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -21,7 +21,7 @@ namespace DocDirect.Converters
 
             if (index % 2 == 0)
             {
-                return "#CDBFAC";
+                return "#FFF3E7";
             }
             else
             {

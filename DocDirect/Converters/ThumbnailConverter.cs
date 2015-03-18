@@ -30,11 +30,17 @@ namespace DocDirect.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string fullPath = value.ToString();
-            string extension = fullPath.Split('.')[1];
+            string[] arr = fullPath.Split('.');
+            string extension = arr[arr.Length-1];
 
+            BitmapImage icon;
+            
+            icon = new BitmapImage(new Uri(@"/Resourses/Icon/DocIcon/" + extension+".png", UriKind.Relative));
+            
+            if(icon==null)
+                icon = new BitmapImage(new Uri(@"/Resourses/Icon/DocIcon/read.png", UriKind.Relative));            
 
-
-            return IconForFile(fullPath);
+            return icon;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

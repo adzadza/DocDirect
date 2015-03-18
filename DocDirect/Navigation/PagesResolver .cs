@@ -9,18 +9,20 @@ namespace DocDirect.Navigator.Navigation
 {
     public class PagesResolver : IPageResolver
     {
-        private readonly Dictionary<string, Func<Page>> m_PageResolver = new Dictionary<string, Func<Page>>();
+        private readonly Dictionary<string, Func<Page>> _pageResolver = new Dictionary<string, Func<Page>>();
 
         public PagesResolver()
         {
-            m_PageResolver.Add(Navigation._filesListAlias, () => new FilesList());
+            _pageResolver.Add(Navigation._filesListAlias, () => new FilesList());
+            _pageResolver.Add(Navigation._aboutViewAlias, () => new AboutView());
+            _pageResolver.Add(Navigation._clientInforamationViewAlias, () => new ClientInformation());
         }
 
         public Page GetPageInstance(string alias)
         {
-            if (m_PageResolver.ContainsKey(alias))
+            if (_pageResolver.ContainsKey(alias))
             {
-                return m_PageResolver[alias]();
+                return _pageResolver[alias]();
             }
             return null;
         }

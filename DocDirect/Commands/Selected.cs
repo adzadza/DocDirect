@@ -8,7 +8,7 @@ using System.Windows.Input;
 using Microsoft.Practices.Composite.Presentation.Commands;
 using System.Windows.Controls;
 
-namespace DocDirect.Commands.SelectedItem
+namespace DocDirect.Commands
 {
     public static class Selected
     {

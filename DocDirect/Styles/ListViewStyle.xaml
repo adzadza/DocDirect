@@ -34,19 +34,20 @@
                         <Grid>
                             <!-- This is used when GridView is put inside the ListView -->
                             <GridViewRowPresenter Content="{TemplateBinding ContentControl.Content}"
-                                          HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                                          SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+                                                  Height="48"
+                                                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
 
                             <!-- This is used for ListView that does not use GridView -->
                             <ContentPresenter x:Name="contentPresenter"
-                                      Content="{TemplateBinding ContentControl.Content}"
-                                      Visibility="Collapsed"
-                                      ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                                      ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
-                                      HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                                      SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+                                              Content="{TemplateBinding ContentControl.Content}"
+                                              Visibility="Collapsed"
+                                              ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                              ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                              HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>

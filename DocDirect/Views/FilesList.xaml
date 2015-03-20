@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:con="clr-namespace:DocDirect.Converters"
       xmlns:local="clr-namespace:DocDirect.ThemesList"
-      xmlns:commands="clr-namespace:DocDirect.Commands.SelectedItem"
+      xmlns:commands="clr-namespace:DocDirect.Commands"
       xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase">
 
     <Page.Resources>        
@@ -118,6 +118,8 @@
         
         <ListView x:Name="listViewFiles" Grid.Row="0"  
                   commands:Selected.Command="{Binding SelectedFileCommand}"
+                  commands:MouseDoubleClick.Command="{Binding OpenFileCommand}"
+                  commands:MouseDoubleClick.CommandParameter="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=SelectedItem}"
                   ItemsSource="{Binding FilesList}"
                   View="{StaticResource GridView}" 
                   ItemContainerStyle="{StaticResource ListViewItemStyle}"
@@ -131,11 +133,26 @@
                         <BitmapEffectGroup/>
                     </ContextMenu.BitmapEffect>
                     <MenuItem Header="Open" Name="openFile"
-                              Command="{Binding ContextMenuOpenFile}"
+                              Command="{Binding OpenFileCommand}"
                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
                     <MenuItem Header="Remove" Name="removeFile"
-                              Command="{Binding ContextMenuRemoveFile}"
+                              Command="{Binding RemoveFileCommand}"
                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                    
+                    <Separator />
+                    
+                    <MenuItem Header="Copy" Name="copyFile"
+                              Command="{Binding CopyFileCommand}"
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                    <MenuItem Header="Paste" Name="pastFile"
+                              Command="{Binding PastFileCommand}"/>
+
+                    <Separator />
+                    
+                    <MenuItem Header="Send" Name="sendFile"
+                              Command="{Binding SendFileCommand}"/>
+                    
+                    
                 </ContextMenu>
             </ListView.ContextMenu>
             

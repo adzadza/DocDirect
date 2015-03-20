@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Presentation.Commands;
 using System.Windows;
+using System.Collections.Specialized;
 
 namespace DocDirect.ViewModel
 {
@@ -30,10 +31,12 @@ namespace DocDirect.ViewModel
 
         private void InitialisCommands()
         {
-            this.SelectedFileCommand = new DelegateCommand<FileViewModel>(obj =>this.SetCommandSelected(obj));
+            this.SelectedFileCommand = new DelegateCommand<FileViewModel>(obj => this.SetCommandSelected(obj));
 
-            this.ContextMenuOpenFile = new RelayCommand(param => this.OpenFileCommand(param));
-            this.ContextMenuRemoveFile = new RelayCommand(param => this.RemoveFileCommand(param));
+            this.OpenFileCommand = new RelayCommand(param => this.OpenFile(param));
+            this.RemoveFileCommand = new RelayCommand(param => this.RemoveFile(param));
+            this.CopyFileCommand = new RelayCommand(param => this.CopyFile(param));
+            this.PastFileCommand = new RelayCommand(param => this.PastFile());
         }
         #endregion
 
@@ -80,12 +83,27 @@ namespace DocDirect.ViewModel
             private set;
         }
 
-        public ICommand ContextMenuOpenFile
+        public ICommand OpenFileCommand
         { 
             get; 
             private set; 
         }
-        public ICommand ContextMenuRemoveFile
+        public ICommand RemoveFileCommand
+        {
+            get;
+            private set;
+        }
+        public ICommand CopyFileCommand
+        {
+            get;
+            private set;
+        }
+        public ICommand PastFileCommand
+        {
+            get;
+            private set;
+        }
+        public ICommand SendFileCommand
         {
             get;
             private set;
@@ -154,6 +172,21 @@ namespace DocDirect.ViewModel
             return filesList;
         }
         
+        // Add one file to collection
+        private FileViewModel SetFileToCollection(string path)
+        {
+            FileInfo file = new FileInfo(path);
+            var modelFile = new FileModel(
+                        file.Name,
+                        file.FullName,
+                        file.Length,
+                        GetFileType(file.Extension),
+                        file.LastAccessTime,
+                        file.Extension
+                    );
+            return new FileViewModel(modelFile);
+        }
+
         private string ConverterSize(long size)
         {
             if (size < 1024) return size.ToString() + " KBit";
@@ -164,6 +197,11 @@ namespace DocDirect.ViewModel
                     else
                         return (size / 1073741824).ToString() + " GB";
         }       
+        private string GetNameFile(string path)
+        {
+            string[] item = path.Split('\\');
+            return item[item.Length - 1];
+        }
 
         private void DeleteItemObservableCollection(string nameFile)
         {
@@ -172,6 +210,8 @@ namespace DocDirect.ViewModel
                 if (item.Name == nameFile)
                 {
                     _filesList.Remove(item);
+
+                    --CountItem;
                     break;
                 }                
             }
@@ -179,44 +219,95 @@ namespace DocDirect.ViewModel
         #endregion
 
         #region Handler Command
-        private void OpenFileCommand(object param)
+        private void OpenFile(object param)
         {
-            FileViewModel file = param as FileViewModel;
+            if (param is FileViewModel) 
+            { 
+                FileViewModel file = param as FileViewModel;
             
-            if (System.IO.File.Exists(file.Path))            
-                Process.Start(file.Path);
-            else
-            {
-                DialogBoxInfo dlg = new DialogBoxInfo("This file does not exist!", "Inforamation");
-                dlg.ShowDialog();
+                if (System.IO.File.Exists(file.Path))            
+                    Process.Start(file.Path);
+                else
+                {
+                    DialogBoxInfo dlg = new DialogBoxInfo("This file does not exist!", "Inforamation");
+                    dlg.ShowDialog();
+                }
             }
-
         }
-        private void RemoveFileCommand(object param)
+        private void RemoveFile(object param)
         {
-            FileViewModel file = param as FileViewModel;
-
-            if (System.IO.File.Exists(file.Path))
+            if (param is FileViewModel)
             {
-                DialogBoxInfo dlg = new DialogBoxInfo("Really want to delete the file?","Question");
-                dlg.ShowDialog();
-                
-                if (dlg.DialogResult == true) 
-                { 
-                    try
+                FileViewModel file = param as FileViewModel;
+
+                if (System.IO.File.Exists(file.Path))
+                {
+                    DialogBoxInfo dlg = new DialogBoxInfo("Really want to delete the file?", "Question");
+                    dlg.ShowDialog();
+
+                    if (dlg.DialogResult == true)
                     {
-                        System.IO.File.Delete(file.Path);
-                        DeleteItemObservableCollection(file.Name);
-                    }
-                    catch (IOException ex)
-                    {
-                        DialogBoxInfo dlgError = new DialogBoxInfo("This file can not be deleted!", "Error");
-                        dlg.ShowDialog();
+                        try
+                        {
+                            System.IO.File.Delete(file.Path);
+                            DeleteItemObservableCollection(file.Name);
+                        }
+                        catch (IOException ex)
+                        {
+                            DialogBoxInfo dlgError = new DialogBoxInfo("This file can not be deleted!", "Error");
+                            dlg.ShowDialog();
+                        }
                     }
                 }
             }
         }
+        private void CopyFile(object param)
+        {
+            FileViewModel file = param as FileViewModel;
 
+            if (file != null) 
+            { 
+                StringCollection FileCollection = new StringCollection();
+                FileCollection.Add(file.Path);
+                Clipboard.SetFileDropList(FileCollection);
+            }
+        }
+        private void PastFile()
+        {
+            StringCollection fileCollection = new StringCollection();
+            fileCollection = Clipboard.GetFileDropList();
+
+            if(fileCollection.Count > 0)
+            {
+                string local;
+                foreach(var path in fileCollection)
+                {
+                    local = _pathToWorkDictionary+"\\"+GetNameFile(path);
+                    try { 
+                        File.Copy(path, local);
+                        FilesList.Add(SetFileToCollection(local));
+                    }
+                    catch(IOException)
+                    {
+                        if (!local.Equals(path))
+                        {
+                            DialogBoxInfo dlg = new DialogBoxInfo("This file exists, replace?", "Information");
+                            dlg.ShowDialog();
+
+                            if (dlg.DialogResult == true)
+                            {
+                                File.Delete(local);
+
+                                File.Copy(path, local);
+                                FilesList.Add(SetFileToCollection(local));
+                            }
+                        }
+                    }
+                    catch (Exception) { }
+                }
+               
+            }
+        }
         private void SetCommandSelected(object param)
         {
             if (param != null) 

@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\MouseDoubleClick.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\Selected.cs" />
     <Compile Include="Converters\BackgroundConverter.cs" />

@@ -7,7 +7,7 @@
     <SolidColorBrush x:Key="TitleBarButtonColorBrush" Color="#007ACC"/>-->
 
     <SolidColorBrush x:Key="WindowCaptionColorBrush" Color="#FF9984"/>
-    <SolidColorBrush x:Key="WindowBorderColorBrush" Color="#FF9984"/> <!--что это?-->
+    <SolidColorBrush x:Key="WindowBorderColorBrush" Color="#FF9984"/> 
     <SolidColorBrush x:Key="TitleBarButtonColorBrush" Color="#FF9984"/>
 
     <Style x:Key="WindowStyleTitleBarButton" TargetType="{x:Type Button}">

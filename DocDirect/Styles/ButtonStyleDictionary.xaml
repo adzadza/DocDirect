@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <SolidColorBrush x:Key="MouseOverColor" Color="#FF9984"/>
+    <SolidColorBrush x:Key="BottonColorDialogBox" Color="#ED6C44"/>
 
     <Style x:Key="ButtonViewPageStyle" TargetType="{x:Type Button}">
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -194,6 +195,27 @@
                         <Trigger Property="Button.IsMouseOver" Value="True">
                             <Setter TargetName="button_1" Property="Fill" Value="{StaticResource MouseOverColor}"/>
                             <Setter TargetName="ellips" Property="Stroke" Value="{StaticResource MouseOverColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DialogBoxBottonStyle" TargetType="Button">
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border CornerRadius="1" Background="{StaticResource BottonColorDialogBox}">
+                        <Grid>
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="0.5"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

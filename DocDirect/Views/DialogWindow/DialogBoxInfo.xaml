@@ -1,0 +1,45 @@
+﻿<Window x:Class="DocDirect.DialogBoxInfo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Information" Height="180" Width="320" Name="DialogBox"
+        FocusManager.FocusedElement="{Binding ElementName=btnYes}"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource MetroDialogBoxStyle}">
+
+    <Grid DataContext="{Binding ElementName=DialogBox}">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="info" Text="{Binding Path=MessageText, Mode=OneWay}" 
+                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                   FontFamily="Segoe UI" FontSize="20" Foreground="#4C4743"
+                   Grid.Row="0">  
+        </TextBlock>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <Button x:Name="btnYes" Content="Yes" 
+                    Height="30" Width="64"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    FontFamily="Segoe UI" FontSize="20" Foreground="White"
+                    Click="btnYes_Click"
+                    Grid.Column="0"
+                    Style="{StaticResource DialogBoxBottonStyle}"> 
+            </Button>
+            <Button x:Name="btnNo" Content="No" 
+                    Height="30" Width="64"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    FontFamily="Segoe UI" FontSize="20" Foreground="White"
+                    Click="btnNo_Click"
+                    Grid.Column="1"
+                    Style="{StaticResource DialogBoxBottonStyle}">                
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

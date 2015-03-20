@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Presentation.Commands;
+using System.Windows;
 
 namespace DocDirect.ViewModel
 {
@@ -14,7 +15,7 @@ namespace DocDirect.ViewModel
     {
         #region Fields
         private ObservableCollection<FileViewModel> _filesList = new ObservableCollection<FileViewModel>();
-        private string _sizeSelectedFile="";
+        private string _sizeSelectedFile;
         private ulong  _countItem = 0;
         private string _pathToWorkDictionary = @"D:\Doc";
         #endregion
@@ -29,10 +30,7 @@ namespace DocDirect.ViewModel
 
         private void InitialisCommands()
         {
-            this.SelectedFileCommand = new DelegateCommand<FileViewModel>(obj => 
-            {
-                CurrentSelectedFile = "  1 item selected " + ConverterSize(obj.Size);
-            });
+            this.SelectedFileCommand = new DelegateCommand<FileViewModel>(obj =>this.SetCommandSelected(obj));
 
             this.ContextMenuOpenFile = new RelayCommand(param => this.OpenFileCommand(param));
             this.ContextMenuRemoveFile = new RelayCommand(param => this.RemoveFileCommand(param));
@@ -98,7 +96,7 @@ namespace DocDirect.ViewModel
         private string GetFileType(string fileType)
         {
             if (isImage(fileType)) return "Image";
-            else if (isDocument(fileType)) return "Docement";
+            else if (isDocument(fileType)) return "Document";
 
             if (isVideo(fileType)) return "Video";
             else if (isMusic(fileType)) return "Music";
@@ -166,16 +164,66 @@ namespace DocDirect.ViewModel
                     else
                         return (size / 1073741824).ToString() + " GB";
         }       
+
+        private void DeleteItemObservableCollection(string nameFile)
+        {
+            foreach (var item in _filesList)
+            {
+                if (item.Name == nameFile)
+                {
+                    _filesList.Remove(item);
+                    break;
+                }                
+            }
+        }
         #endregion
 
         #region Handler Command
         private void OpenFileCommand(object param)
         {
+            FileViewModel file = param as FileViewModel;
+            
+            if (System.IO.File.Exists(file.Path))            
+                Process.Start(file.Path);
+            else
+            {
+                DialogBoxInfo dlg = new DialogBoxInfo("This file does not exist!", "Inforamation");
+                dlg.ShowDialog();
+            }
 
         }
         private void RemoveFileCommand(object param)
         {
+            FileViewModel file = param as FileViewModel;
 
+            if (System.IO.File.Exists(file.Path))
+            {
+                DialogBoxInfo dlg = new DialogBoxInfo("Really want to delete the file?","Question");
+                dlg.ShowDialog();
+                
+                if (dlg.DialogResult == true) 
+                { 
+                    try
+                    {
+                        System.IO.File.Delete(file.Path);
+                        DeleteItemObservableCollection(file.Name);
+                    }
+                    catch (IOException ex)
+                    {
+                        DialogBoxInfo dlgError = new DialogBoxInfo("This file can not be deleted!", "Error");
+                        dlg.ShowDialog();
+                    }
+                }
+            }
+        }
+
+        private void SetCommandSelected(object param)
+        {
+            if (param != null) 
+            { 
+                FileViewModel file = param as FileViewModel;
+                CurrentSelectedFile = "  1 item selected " + ConverterSize(file.Size);
+            }
         }
         #endregion End Handler Command
     }

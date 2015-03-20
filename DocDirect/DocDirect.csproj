@@ -91,6 +91,9 @@
     <Compile Include="Views\ClientInformation.xaml.cs">
       <DependentUpon>ClientInformation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DialogWindow\DialogBoxInfo.xaml.cs">
+      <DependentUpon>DialogBoxInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FilesList.xaml.cs">
       <DependentUpon>FilesList.xaml</DependentUpon>
     </Compile>
@@ -99,6 +102,10 @@
       <DependentUpon>TextBoxSearch.xaml</DependentUpon>
     </Compile>
     <Page Include="Styles\ButtonStyleDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\CustomizeWindows\MetroDialogBoxStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -123,6 +130,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ClientInformation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DialogWindow\DialogBoxInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

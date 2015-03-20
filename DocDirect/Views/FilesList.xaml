@@ -131,9 +131,11 @@
                         <BitmapEffectGroup/>
                     </ContextMenu.BitmapEffect>
                     <MenuItem Header="Open" Name="openFile"
-                              Command="{Binding}"/>
+                              Command="{Binding ContextMenuOpenFile}"
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
                     <MenuItem Header="Remove" Name="removeFile"
-                              Command="{Binding}"/>
+                              Command="{Binding ContextMenuRemoveFile}"
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
                 </ContextMenu>
             </ListView.ContextMenu>
             

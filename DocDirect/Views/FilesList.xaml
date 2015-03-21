@@ -125,7 +125,8 @@
                   ItemContainerStyle="{StaticResource ListViewItemStyle}"
                   Style="{StaticResource ListViewStyle}"
                   Background="#F2F4F7"
-                  Margin="2">
+                  Margin="2"
+                  VerticalAlignment="Top">
 
             <ListView.ContextMenu>
                 <ContextMenu x:Name="FileEdit" StaysOpen="True" Background="WhiteSmoke">
@@ -150,7 +151,8 @@
                     <Separator />
                     
                     <MenuItem Header="Send" Name="sendFile"
-                              Command="{Binding SendFileCommand}"/>
+                              Command="{Binding SendFileCommand}"
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
                     
                     
                 </ContextMenu>

@@ -18,7 +18,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <Grid Grid.Column="0" Background="#252935" Margin="0 -46 0 0" ShowGridLines="True">
+        <Grid Grid.Column="0" Background="#252935" Margin="0 -46 0 0" ShowGridLines="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="48"/>
@@ -36,6 +36,7 @@
         </Grid>
                 
         <Frame Name="FilesFrame" Background="Transparent" 
+               VerticalAlignment="Stretch"
                BorderThickness="1"
                BorderBrush="#767676"
                NavigationUIVisibility="Hidden"

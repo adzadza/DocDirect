@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using Microsoft.Practices.Composite.Presentation.Commands;
 using System.Windows;
 using System.Collections.Specialized;
+using Windows.Storage;
 
 namespace DocDirect.ViewModel
 {
@@ -16,27 +17,30 @@ namespace DocDirect.ViewModel
     {
         #region Fields
         private ObservableCollection<FileViewModel> _filesList = new ObservableCollection<FileViewModel>();
+        private FileTransfer _transfer;
         private string _sizeSelectedFile;
         private ulong  _countItem = 0;
-        private string _pathToWorkDictionary = @"D:\Doc";
+        private string _pathToWorkDictionary = @"C:\Doc";
         #endregion
 
         #region Constructor
         public FilesListViewModel()
         {
-            _filesList = GetFiles();
-
             InitialisCommands();
+
+            _filesList = GetFiles();
+            _transfer = new FileTransfer();
         }
 
         private void InitialisCommands()
         {
-            this.SelectedFileCommand = new DelegateCommand<FileViewModel>(obj => this.SetCommandSelected(obj));
+            this.SelectedFileCommand = new RelayCommand(obj => this.SetCommandSelected(obj));
 
             this.OpenFileCommand = new RelayCommand(param => this.OpenFile(param));
             this.RemoveFileCommand = new RelayCommand(param => this.RemoveFile(param));
             this.CopyFileCommand = new RelayCommand(param => this.CopyFile(param));
             this.PastFileCommand = new RelayCommand(param => this.PastFile());
+            this.SendFileCommand = new RelayCommand(param => this.SendFileToClient(param));
         }
         #endregion
 
@@ -72,15 +76,10 @@ namespace DocDirect.ViewModel
         #endregion
 
         #region Commands
-        public ICommand ThumbnailViewCommand
-        {
-            get;
-            private set;
-        }
         public ICommand SelectedFileCommand
         {
             get;
-            private set;
+            set;
         }
 
         public ICommand OpenFileCommand
@@ -108,6 +107,7 @@ namespace DocDirect.ViewModel
             get;
             private set;
         }
+
         #endregion
 
         #region Method
@@ -129,7 +129,7 @@ namespace DocDirect.ViewModel
         }
         private bool isDocument(string fileType)
         {
-            string pattern = "(.doc)|(.docx)|(.pdf)";
+            string pattern = "(.doc)|(.docx)|(.pdf)|(.xls)|(.xlsx)|(.txt)";
             return Regex.IsMatch(fileType, pattern, RegexOptions.IgnoreCase);
         }
         private bool isVideo(string fileType)
@@ -146,27 +146,31 @@ namespace DocDirect.ViewModel
         private ObservableCollection<FileViewModel> GetFiles()
         {
             DirectoryInfo directory = new DirectoryInfo(_pathToWorkDictionary);
-
             ObservableCollection<FileViewModel> filesList = new ObservableCollection<FileViewModel>();
-            try
+
+            if (directory.Exists)
             {
-                foreach (var file in directory.EnumerateFiles("*", SearchOption.AllDirectories))
+                try
                 {
-                    var modelFile = new FileModel(
-                        file.Name,
-                        file.FullName,
-                        file.Length,
-                        GetFileType(file.Extension),
-                        file.LastAccessTime,
-                        file.Extension
-                    );
-                    _countItem++;
-                    filesList.Add(new FileViewModel(modelFile));
+                    foreach (var file in directory.EnumerateFiles("*", SearchOption.AllDirectories))
+                    {
+                        var modelFile = new FileModel(
+                            file.Name,
+                            file.FullName,
+                            file.Length,
+                            GetFileType(file.Extension),
+                            file.LastAccessTime,
+                            file.Extension
+                        );
+                        _countItem++;
+                        filesList.Add(new FileViewModel(modelFile));
+                    }
                 }
+                catch (Exception) {}
             }
-            catch (Exception ex)
+            else
             {
-                Debugger.Log(1, "Error", ex.Message);
+                Directory.CreateDirectory(_pathToWorkDictionary);
             }
 
             return filesList;
@@ -252,11 +256,12 @@ namespace DocDirect.ViewModel
                             System.IO.File.Delete(file.Path);
                             DeleteItemObservableCollection(file.Name);
                         }
-                        catch (IOException ex)
+                        catch (IOException)
                         {
                             DialogBoxInfo dlgError = new DialogBoxInfo("This file can not be deleted!", "Error");
                             dlg.ShowDialog();
                         }
+                        catch (Exception) { }
                     }
                 }
             }
@@ -314,6 +319,21 @@ namespace DocDirect.ViewModel
             { 
                 FileViewModel file = param as FileViewModel;
                 CurrentSelectedFile = "  1 item selected " + ConverterSize(file.Size);
+            }
+        }
+
+        private async void SendFileToClient(object param)
+        {
+            if (param is FileViewModel)
+            {
+                FileViewModel file = param as FileViewModel;
+
+                if (System.IO.File.Exists(file.Path))
+                {
+                    StorageFile fileStorage = await StorageFile.GetFileFromPathAsync(file.Path);
+
+                    _transfer.SendFileAsync(fileStorage);
+                }
             }
         }
         #endregion End Handler Command

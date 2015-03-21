@@ -21,7 +21,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Image Source="C://Users/rjkz1_000/Pictures/wilde.jpg" Width="500" Margin="20">
+            <Image Width="500" Margin="20">
             </Image>
             
             <TextBlock Text="Information">

@@ -151,7 +151,7 @@
                     <Separator />
                     
                     <MenuItem Header="Send" Name="sendFile"
-                              Command="{Binding SendFileCommand}"
+                              Command="{Binding SendFileCommandAsync}"
                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
                     
                     
@@ -180,7 +180,7 @@
             </StackPanel>
 
             <Label x:Name="SizeCurrentFile" Grid.Column="1"
-                    Content="{Binding CurrentSelectedFile}"
+                    Content="{Binding SelectedFileSize}"
                     FontFamily="Segoe UI"
                     FontSize="16"/>
             

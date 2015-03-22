@@ -70,6 +70,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\AsyncCommand\AsyncCommand.cs" />
+    <Compile Include="Commands\AsyncCommand\AsyncCommandBase.cs" />
+    <Compile Include="Commands\AsyncCommand\Interface\IAsyncCommand.cs" />
+    <Compile Include="Commands\AsyncCommand\NotifyTaskCompletion.cs" />
     <Compile Include="Commands\MouseDoubleClick.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\Selected.cs" />

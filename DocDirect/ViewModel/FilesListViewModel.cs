@@ -10,6 +10,12 @@ using Microsoft.Practices.Composite.Presentation.Commands;
 using System.Windows;
 using System.Collections.Specialized;
 using Windows.Storage;
+using Windows.Networking.Sockets;
+using System.Threading.Tasks;
+using Windows.Networking;
+using Windows.Storage.Streams;
+using DocDirect.Commands.AsyncCommand;
+using System.Threading;
 
 namespace DocDirect.ViewModel
 {
@@ -17,10 +23,15 @@ namespace DocDirect.ViewModel
     {
         #region Fields
         private ObservableCollection<FileViewModel> _filesList = new ObservableCollection<FileViewModel>();
-        private FileTransfer _transfer;
         private string _sizeSelectedFile;
         private ulong  _countItem = 0;
-        private string _pathToWorkDictionary = @"C:\Doc";
+
+        private String _port = "6505";
+        private String _workFolderName = @"C:\Doc";
+        private StreamSocketListener _tcpListener;
+        private StorageFolder _workFolder;
+        private FileViewModel _selectedFile;
+        private uint _sizeBufer = 1024;
         #endregion
 
         #region Constructor
@@ -29,7 +40,6 @@ namespace DocDirect.ViewModel
             InitialisCommands();
 
             _filesList = GetFiles();
-            _transfer = new FileTransfer();
         }
 
         private void InitialisCommands()
@@ -40,7 +50,10 @@ namespace DocDirect.ViewModel
             this.RemoveFileCommand = new RelayCommand(param => this.RemoveFile(param));
             this.CopyFileCommand = new RelayCommand(param => this.CopyFile(param));
             this.PastFileCommand = new RelayCommand(param => this.PastFile());
-            this.SendFileCommand = new RelayCommand(param => this.SendFileToClient(param));
+
+            //this.SendFileCommand = new RelayCommand(param => this.SendFileToClient(param));
+
+            this.SendFileCommandAsync = AsyncCommand.Create(token => this.SendFileToClient(CurrentSelectedFile, token));
         }
         #endregion
 
@@ -53,7 +66,7 @@ namespace DocDirect.ViewModel
                 OnPropertyChanged("FilesList");
             }
         }
-        public string CurrentSelectedFile
+        public string SelectedFileSize
         {
             get { return _sizeSelectedFile; }
             set
@@ -63,6 +76,14 @@ namespace DocDirect.ViewModel
                     _sizeSelectedFile = value;
                     OnPropertyChanged("CurrentSelectedFile");
                 }
+            }
+        }
+        public FileViewModel CurrentSelectedFile
+        {
+            get { return _selectedFile; }
+            set {
+                _selectedFile = value;
+                OnPropertyChanged("CurrentSelectedFile");
             }
         }
         public ulong CountItem
@@ -76,38 +97,15 @@ namespace DocDirect.ViewModel
         #endregion
 
         #region Commands
-        public ICommand SelectedFileCommand
-        {
-            get;
-            set;
-        }
+        public ICommand SelectedFileCommand { get; set;}
 
-        public ICommand OpenFileCommand
-        { 
-            get; 
-            private set; 
-        }
-        public ICommand RemoveFileCommand
-        {
-            get;
-            private set;
-        }
-        public ICommand CopyFileCommand
-        {
-            get;
-            private set;
-        }
-        public ICommand PastFileCommand
-        {
-            get;
-            private set;
-        }
-        public ICommand SendFileCommand
-        {
-            get;
-            private set;
-        }
+        public ICommand OpenFileCommand { get; private set; }
+        public ICommand RemoveFileCommand { get; private set; }
+        public ICommand CopyFileCommand { get; private set; }
+        public ICommand PastFileCommand { get; private set; }
+        public ICommand SendFileCommand { get; private set; }
 
+        public IAsyncCommand SendFileCommandAsync { get; private set; }
         #endregion
 
         #region Method
@@ -145,7 +143,7 @@ namespace DocDirect.ViewModel
 
         private ObservableCollection<FileViewModel> GetFiles()
         {
-            DirectoryInfo directory = new DirectoryInfo(_pathToWorkDictionary);
+            DirectoryInfo directory = new DirectoryInfo(_workFolderName);
             ObservableCollection<FileViewModel> filesList = new ObservableCollection<FileViewModel>();
 
             if (directory.Exists)
@@ -170,7 +168,7 @@ namespace DocDirect.ViewModel
             }
             else
             {
-                Directory.CreateDirectory(_pathToWorkDictionary);
+                Directory.CreateDirectory(_workFolderName);
             }
 
             return filesList;
@@ -287,7 +285,7 @@ namespace DocDirect.ViewModel
                 string local;
                 foreach(var path in fileCollection)
                 {
-                    local = _pathToWorkDictionary+"\\"+GetNameFile(path);
+                    local = _workFolderName+ "\\" +GetNameFile(path);
                     try { 
                         File.Copy(path, local);
                         FilesList.Add(SetFileToCollection(local));
@@ -318,11 +316,16 @@ namespace DocDirect.ViewModel
             if (param != null) 
             { 
                 FileViewModel file = param as FileViewModel;
-                CurrentSelectedFile = "  1 item selected " + ConverterSize(file.Size);
+
+                //сохраним размер, для того что бы вывести его на экран
+                SelectedFileSize = "  1 item selected " + ConverterSize(file.Size);
+
+                // и сохраним модель файла для того что бы передать в async command'у
+                CurrentSelectedFile = file;
             }
         }
 
-        private async void SendFileToClient(object param)
+        private async Task SendFileToClient(object param, CancellationToken token = new CancellationToken())
         {
             if (param is FileViewModel)
             {
@@ -332,10 +335,100 @@ namespace DocDirect.ViewModel
                 {
                     StorageFile fileStorage = await StorageFile.GetFileFromPathAsync(file.Path);
 
-                    _transfer.SendFileAsync(fileStorage);
+                    await SendFileAsync(fileStorage);
                 }
             }
         }
         #endregion End Handler Command
+
+        #region FileTransfer
+        private async Task Start()
+        {
+            _tcpListener = new StreamSocketListener();
+            _tcpListener.ConnectionReceived += OnClientConnectionReceived;
+            await _tcpListener.BindServiceNameAsync(_port);
+            await _tcpListener.BindEndpointAsync(new HostName("192.168.10.66"), "adzadza");
+
+            _workFolder = await StorageFolder.GetFolderFromPathAsync(_workFolderName);
+        }
+
+        private async void OnClientConnectionReceived(StreamSocketListener listener, StreamSocketListenerConnectionReceivedEventArgs args)
+        {
+            StorageFile file;
+            using (StreamSocket socket = args.Socket)
+            using (var rw = new DataReader(socket.InputStream))
+            {
+                //1. Read the filename lenght
+                await rw.LoadAsync(sizeof(Int32));
+                var fileNameLenght = (uint)rw.ReadInt32();
+                // 2. Read the filename
+                await rw.LoadAsync(fileNameLenght);
+                var originalFileName = rw.ReadString(fileNameLenght);
+                // 3. Read the file length
+                await rw.LoadAsync(sizeof(UInt64));
+                var fileLenght = rw.ReadUInt64();
+
+                // 4. Read file
+                using (var memStream = await DownloadFile(rw, fileLenght))
+                {
+                    file = await _workFolder.CreateFileAsync(originalFileName, CreationCollisionOption.ReplaceExisting);
+                    using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                    {
+                        await RandomAccessStream.CopyAndCloseAsync(memStream.GetInputStreamAt(0), fileStream.GetOutputStreamAt(0));
+                    }
+                    rw.DetachStream();
+                }
+            }
+        }
+
+        public async Task SendFileAsync(StorageFile selectedFile)
+        {
+            await Start();
+
+            byte[] output = new byte[_sizeBufer];
+            var prop = await selectedFile.GetBasicPropertiesAsync();
+
+            using (StreamSocket socket = new StreamSocket())
+            using (var dw = new DataWriter(socket.OutputStream))
+            {
+                await socket.ConnectAsync(new HostName("192.167.10.33"), _port);
+
+                // 1. Send the filename length
+                dw.WriteInt32(selectedFile.Name.Length); // filename length is fixed
+                // 2. Send the filename
+                dw.WriteString(selectedFile.Name);
+                // 3. Send the file length
+                dw.WriteUInt64(prop.Size);
+                // 4. Send the file
+                var fileStream = await selectedFile.OpenStreamForReadAsync();
+                while (fileStream.Position < (long)prop.Size)
+                {
+                    var rlen = await fileStream.ReadAsync(output, 0, output.Length);
+                    dw.WriteBytes(output);
+                }
+
+                await dw.FlushAsync();
+                await dw.StoreAsync();
+
+                await socket.OutputStream.FlushAsync();
+            }
+        }
+        private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader rw, ulong fileLength)
+        {
+            var memStream = new InMemoryRandomAccessStream();
+
+            // Download the file
+            while (memStream.Position < fileLength)
+            {
+                //Verbose(string.Format("Receiving file...{0}/{1} bytes", memStream.Position, fileLength));
+                var lenToRead = Math.Min(1024, fileLength - memStream.Position);
+                await rw.LoadAsync((uint)lenToRead);
+                var tempBuff = rw.ReadBuffer((uint)lenToRead);
+                await memStream.WriteAsync(tempBuff);
+            }
+
+            return memStream;
+        }
+        #endregion
     }
 }

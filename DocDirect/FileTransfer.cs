@@ -25,10 +25,9 @@ namespace DocDirect
             //Start();
         }
  
-        private async void Start() 
+        private async Task Start() 
         {
             _tcpListener = new StreamSocketListener();
-
             _tcpListener.ConnectionReceived += OnClientConnectionReceived;
             await _tcpListener.BindServiceNameAsync(_port);
             await _tcpListener.BindEndpointAsync(new HostName("192.168.10.66"), "adzadza");
@@ -68,7 +67,7 @@ namespace DocDirect
 
         public async void SendFileAsync(StorageFile selectedFile)
         {
-            Start();
+            await Start();
 
             byte[] output = new byte[_sizeBufer];
             var prop = await selectedFile.GetBasicPropertiesAsync();

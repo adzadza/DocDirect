@@ -11,11 +11,14 @@ using System.Windows;
 using System.Collections.Specialized;
 using Windows.Storage;
 using Windows.Networking.Sockets;
-using System.Threading.Tasks;
 using Windows.Networking;
 using Windows.Storage.Streams;
 using DocDirect.Commands.AsyncCommand;
+
+
 using System.Threading;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 
 namespace DocDirect.ViewModel
 {
@@ -28,10 +31,13 @@ namespace DocDirect.ViewModel
 
         private String _port = "6505";
         private String _workFolderName = @"C:\Doc";
-        private StreamSocketListener _tcpListener;
+        //private StreamSocketListener _tcpListener;
         private StorageFolder _workFolder;
         private FileViewModel _selectedFile;
         private uint _sizeBufer = 1024;
+
+        StreamSocket _socket;
+        StreamSocketListener _listener;
         #endregion
 
         #region Constructor
@@ -40,6 +46,8 @@ namespace DocDirect.ViewModel
             InitialisCommands();
 
             _filesList = GetFiles();
+            _socket = new StreamSocket();
+            _listener = new StreamSocketListener();
         }
 
         private void InitialisCommands()
@@ -53,7 +61,11 @@ namespace DocDirect.ViewModel
 
             //this.SendFileCommand = new RelayCommand(param => this.SendFileToClient(param));
 
-            this.SendFileCommandAsync = AsyncCommand.Create(token => this.SendFileToClient(CurrentSelectedFile, token));
+            //this.SendFileCommandAsync = AsyncCommand.Create(token => this.SendFileToClient(CurrentSelectedFile, token));
+
+            ConnectCommand = AsyncCommand.Create(param => this.ConnectCom(param));
+            ListenerCommand = AsyncCommand.Create(param => this.ListenerCom(param));
+            SendCommand = AsyncCommand.Create(param => this.SendCom(param));
         }
         #endregion
 
@@ -106,6 +118,10 @@ namespace DocDirect.ViewModel
         public ICommand SendFileCommand { get; private set; }
 
         public IAsyncCommand SendFileCommandAsync { get; private set; }
+
+        public IAsyncCommand ConnectCommand { get; private set; }
+        public IAsyncCommand ListenerCommand { get; private set; }
+        public IAsyncCommand SendCommand { get; private set; }
         #endregion
 
         #region Method
@@ -344,15 +360,21 @@ namespace DocDirect.ViewModel
         #region FileTransfer
         private async Task Start()
         {
-            _tcpListener = new StreamSocketListener();
-            _tcpListener.ConnectionReceived += OnClientConnectionReceived;
-            await _tcpListener.BindServiceNameAsync(_port);
-            await _tcpListener.BindEndpointAsync(new HostName("192.168.10.66"), "adzadza");
+            try{
+                StreamSocketListener Listener = new StreamSocketListener();
+                Listener.ConnectionReceived += OnClientConnectionReceived;
+                await Listener.BindEndpointAsync(new HostName("192.168.10.33"), _port);
 
-            _workFolder = await StorageFolder.GetFolderFromPathAsync(_workFolderName);
+                _workFolder = await StorageFolder.GetFolderFromPathAsync(_workFolderName);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
-        private async void OnClientConnectionReceived(StreamSocketListener listener, StreamSocketListenerConnectionReceivedEventArgs args)
+        private async void OnClientConnectionReceived(StreamSocketListener listener, 
+                                                      StreamSocketListenerConnectionReceivedEventArgs args)
         {
             StorageFile file;
             using (StreamSocket socket = args.Socket)
@@ -383,15 +405,30 @@ namespace DocDirect.ViewModel
 
         public async Task SendFileAsync(StorageFile selectedFile)
         {
-            await Start();
+            Debug.WriteLine("---> SendFileAsync <----\n");
+            //await Start();
+            try
+            {
+                StreamSocketListener Listener = new StreamSocketListener();
+                Listener.ConnectionReceived += OnClientConnectionReceived;
+                await Listener.BindEndpointAsync(new HostName("192.168.10.33"), _port);
 
+                _workFolder = await StorageFolder.GetFolderFromPathAsync(_workFolderName);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            
             byte[] output = new byte[_sizeBufer];
             var prop = await selectedFile.GetBasicPropertiesAsync();
 
             using (StreamSocket socket = new StreamSocket())
             using (var dw = new DataWriter(socket.OutputStream))
             {
-                await socket.ConnectAsync(new HostName("192.167.10.33"), _port);
+                await socket.ConnectAsync(new HostName("192.167.10.66"), _port);
+                
+                Debug.WriteLine("ConnectAsync");
 
                 // 1. Send the filename length
                 dw.WriteInt32(selectedFile.Name.Length); // filename length is fixed
@@ -413,6 +450,7 @@ namespace DocDirect.ViewModel
                 await socket.OutputStream.FlushAsync();
             }
         }
+
         private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader rw, ulong fileLength)
         {
             var memStream = new InMemoryRandomAccessStream();
@@ -428,6 +466,108 @@ namespace DocDirect.ViewModel
             }
 
             return memStream;
+        }
+        #endregion
+
+        #region Socket
+        private async Task ConnectCom(CancellationToken token = new CancellationToken())
+        {
+            StreamSocket Socket = new StreamSocket();
+
+            CoreApplication.Properties.Add("Socket", Socket);
+
+            try
+            {
+                await Socket.ConnectAsync(new HostName("192.168.56.1"), "22112");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async Task ListenerCom(CancellationToken token = new CancellationToken())
+        {
+            try
+            {
+                StreamSocketListener Listener = new StreamSocketListener();
+                Listener.ConnectionReceived += OnClientConnection;
+
+                CoreApplication.Properties.Add("Listener", Listener);
+
+                await Listener.BindEndpointAsync(new HostName("192.168.56.1"), "22112");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async Task SendCom(object param)
+        {
+            object outValue ;
+            StreamSocket Socket;
+
+            if (!CoreApplication.Properties.TryGetValue("Socket", out outValue))
+            {
+                MessageBox.Show("Not Socket");
+                return;
+            }
+
+            Socket = (StreamSocket)outValue; 
+
+            try
+            {
+                DataWriter writer;
+                if (!CoreApplication.Properties.TryGetValue("DataWriter", out outValue))
+                {
+                    writer = new DataWriter(Socket.OutputStream);
+                    CoreApplication.Properties.Add("DataWriter", writer);
+                }
+                else
+                {
+                    writer = (DataWriter)outValue;
+                }
+
+                string stringToSend = "Hello World!";
+                writer.WriteUInt32(writer.MeasureString(stringToSend));
+                writer.WriteString(stringToSend);
+            
+                await writer.StoreAsync();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
+        }
+        private async void OnClientConnection(StreamSocketListener listener,
+                                              StreamSocketListenerConnectionReceivedEventArgs args)
+        {
+            DataReader reader = new DataReader(args.Socket.InputStream);
+            try
+            {
+                while (true)
+                {
+                    uint sizeFieldCount = await reader.LoadAsync(sizeof(uint));
+                    if (sizeFieldCount != sizeof(uint))
+                    {
+                        return;
+                    }
+
+                    uint stringLength = reader.ReadUInt32();
+                    uint actualStringLength = await reader.LoadAsync(stringLength);
+                    if (stringLength != actualStringLength)
+                    {
+                        return;
+                    }
+                    
+                    MessageBox.Show("Received data: " + reader.ReadString(actualStringLength));
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
         #endregion
     }

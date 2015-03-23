@@ -116,7 +116,11 @@ namespace DocDirect.Commands.AsyncCommand
 
         public static AsyncCommand<object> Create(Func<CancellationToken, Task> command)
         {
-            return new AsyncCommand<object>(async token => { await command(token); return null; });
+            return new AsyncCommand<object>(async token => 
+            {
+                await command(token); 
+                return null; 
+            });
         }
 
         public static AsyncCommand<TResult> Create<TResult>(Func<CancellationToken, Task<TResult>> command)

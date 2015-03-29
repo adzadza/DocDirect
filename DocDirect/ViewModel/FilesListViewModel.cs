@@ -1,5 +1,4 @@
-﻿using DocDirect.Commands;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System;
 using System.Windows.Input;
@@ -13,12 +12,12 @@ using Windows.Storage;
 using Windows.Networking.Sockets;
 using Windows.Networking;
 using Windows.Storage.Streams;
-using DocDirect.Commands.AsyncCommand;
-
-
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
+using DocDirect.Commands.AsyncCommand;
+using DocDirect.Commands;
+using DocDirect.Crypto;
 
 namespace DocDirect.ViewModel
 {
@@ -26,18 +25,17 @@ namespace DocDirect.ViewModel
     {
         #region Fields
         private ObservableCollection<FileViewModel> _filesList = new ObservableCollection<FileViewModel>();
-        private string _sizeSelectedFile;
-        private ulong  _countItem = 0;
-
-        private String _port = "6505";
-        private String _workFolderName = @"C:\Doc";
-        //private StreamSocketListener _tcpListener;
-        private StorageFolder _workFolder;
-        private FileViewModel _selectedFile;
-        private uint _sizeBufer = 1024;
-
-        StreamSocket _socket;
-        StreamSocketListener _listener;
+        private CryptoUtils     _cryptoUtils;
+        private string          _sizeSelectedFile;
+        private ulong           _countItem = 0;
+            
+        private String           _workFolderName = @"C:\Doc";
+        private StorageFolder    _workFolder;
+        private StorageFolder    __workFolder;
+        private FileViewModel    _selectedFile;
+        private uint             _sizeBufer = 1024;
+        private String           _port = "22112";
+        private HostName         _LOCAL = new HostName("192.168.56.1"); // DEBUG
         #endregion
 
         #region Constructor
@@ -46,8 +44,7 @@ namespace DocDirect.ViewModel
             InitialisCommands();
 
             _filesList = GetFiles();
-            _socket = new StreamSocket();
-            _listener = new StreamSocketListener();
+            _cryptoUtils = new CryptoUtils();
         }
 
         private void InitialisCommands()
@@ -61,11 +58,14 @@ namespace DocDirect.ViewModel
 
             //this.SendFileCommand = new RelayCommand(param => this.SendFileToClient(param));
 
-            //this.SendFileCommandAsync = AsyncCommand.Create(token => this.SendFileToClient(CurrentSelectedFile, token));
+            this.SendFileCommandAsync = AsyncCommand.Create(token => this.SendFileToClient(CurrentSelectedFile, token));
+            this.InitialisStreamSocketAsync = AsyncCommand.Create(tocken => this.InitialisStreamSocket(tocken));
 
-            ConnectCommand = AsyncCommand.Create(param => this.ConnectCom(param));
-            ListenerCommand = AsyncCommand.Create(param => this.ListenerCom(param));
-            SendCommand = AsyncCommand.Create(param => this.SendCom(param));
+            InitialisStreamSocketAsync.Execute(null);
+
+            //ConnectCommand = AsyncCommand.Create(param => this.ConnectCom(param));
+            //ListenerCommand = AsyncCommand.Create(param => this.ListenerCom(param));
+            //SendCommand = AsyncCommand.Create(param => this.SendCom(param));
         }
         #endregion
 
@@ -118,6 +118,7 @@ namespace DocDirect.ViewModel
         public ICommand SendFileCommand { get; private set; }
 
         public IAsyncCommand SendFileCommandAsync { get; private set; }
+        public IAsyncCommand InitialisStreamSocketAsync { get; private set; }
 
         public IAsyncCommand ConnectCommand { get; private set; }
         public IAsyncCommand ListenerCommand { get; private set; }
@@ -273,7 +274,7 @@ namespace DocDirect.ViewModel
                         catch (IOException)
                         {
                             DialogBoxInfo dlgError = new DialogBoxInfo("This file can not be deleted!", "Error");
-                            dlg.ShowDialog();
+                            dlgError.ShowDialog();
                         }
                         catch (Exception) { }
                     }
@@ -341,6 +342,25 @@ namespace DocDirect.ViewModel
             }
         }
 
+        private async Task InitialisStreamSocket(CancellationToken token = new CancellationToken())
+        {
+            try
+            {
+                StreamSocketListener Listener = new StreamSocketListener();
+                Listener.ConnectionReceived += OnClientConnectionReceived;
+
+                CoreApplication.Properties.Add("Listener", Listener);
+
+                await Listener.BindEndpointAsync(_LOCAL, _port);
+
+                _workFolder = await StorageFolder.GetFolderFromPathAsync(_workFolderName);
+                __workFolder = await StorageFolder.GetFolderFromPathAsync(@"D:\Doc");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         private async Task SendFileToClient(object param, CancellationToken token = new CancellationToken())
         {
             if (param is FileViewModel)
@@ -350,107 +370,130 @@ namespace DocDirect.ViewModel
                 if (System.IO.File.Exists(file.Path))
                 {
                     StorageFile fileStorage = await StorageFile.GetFileFromPathAsync(file.Path);
+                    if (!CoreApplication.Properties.ContainsKey("FileSend"))
+                    {
+                        CoreApplication.Properties.Add("FileSend", fileStorage);
+                    }
 
-                    await SendFileAsync(fileStorage);
+                    await ExchangeKeySend();
                 }
             }
         }
         #endregion End Handler Command
 
         #region FileTransfer
-        private async Task Start()
-        {
-            try{
-                StreamSocketListener Listener = new StreamSocketListener();
-                Listener.ConnectionReceived += OnClientConnectionReceived;
-                await Listener.BindEndpointAsync(new HostName("192.168.10.33"), _port);
-
-                _workFolder = await StorageFolder.GetFolderFromPathAsync(_workFolderName);
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-        }
-
         private async void OnClientConnectionReceived(StreamSocketListener listener, 
                                                       StreamSocketListenerConnectionReceivedEventArgs args)
         {
-            StorageFile file;
             using (StreamSocket socket = args.Socket)
-            using (var rw = new DataReader(socket.InputStream))
+            using (var dr = new DataReader(socket.InputStream))
             {
-                //1. Read the filename lenght
-                await rw.LoadAsync(sizeof(Int32));
-                var fileNameLenght = (uint)rw.ReadInt32();
-                // 2. Read the filename
-                await rw.LoadAsync(fileNameLenght);
-                var originalFileName = rw.ReadString(fileNameLenght);
-                // 3. Read the file length
-                await rw.LoadAsync(sizeof(UInt64));
-                var fileLenght = rw.ReadUInt64();
+                await dr.LoadAsync(sizeof(Byte));
+                byte step = dr.ReadByte();
 
-                // 4. Read file
-                using (var memStream = await DownloadFile(rw, fileLenght))
+                switch(step)
                 {
-                    file = await _workFolder.CreateFileAsync(originalFileName, CreationCollisionOption.ReplaceExisting);
-                    using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
-                    {
-                        await RandomAccessStream.CopyAndCloseAsync(memStream.GetInputStreamAt(0), fileStream.GetOutputStreamAt(0));
-                    }
-                    rw.DetachStream();
+                    case (Byte)Step.ExchangeKey:
+                        await ExchangeKeyDownload(dr);
+                        break;
+                    case (Byte)Step.DownloadFileWhithHash:
+                        await DownloadFileAsync(dr);
+                        break;
+                    case (Byte)Step.SuccessfulTransmission:
+                        SuccessfulTransmission();
+                        break;
+                    case (Byte)Step.TransmissionError:
+                        TransmissionError();
+                        break;
                 }
+                dr.DetachStream();
             }
         }
 
-        public async Task SendFileAsync(StorageFile selectedFile)
-        {
+        public async Task SendFileAsync()
+        {            
             Debug.WriteLine("---> SendFileAsync <----\n");
-            //await Start();
-            try
+            object outValue;
+            if (CoreApplication.Properties.TryGetValue("FileSend", out outValue))
             {
-                StreamSocketListener Listener = new StreamSocketListener();
-                Listener.ConnectionReceived += OnClientConnectionReceived;
-                await Listener.BindEndpointAsync(new HostName("192.168.10.33"), _port);
+                StorageFile file = outValue as StorageFile;
 
-                _workFolder = await StorageFolder.GetFolderFromPathAsync(_workFolderName);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-            
-            byte[] output = new byte[_sizeBufer];
-            var prop = await selectedFile.GetBasicPropertiesAsync();
+                byte[] output = new byte[_sizeBufer];
+                var prop = await file.GetBasicPropertiesAsync();
 
-            using (StreamSocket socket = new StreamSocket())
-            using (var dw = new DataWriter(socket.OutputStream))
-            {
-                await socket.ConnectAsync(new HostName("192.167.10.66"), _port);
-                
-                Debug.WriteLine("ConnectAsync");
-
-                // 1. Send the filename length
-                dw.WriteInt32(selectedFile.Name.Length); // filename length is fixed
-                // 2. Send the filename
-                dw.WriteString(selectedFile.Name);
-                // 3. Send the file length
-                dw.WriteUInt64(prop.Size);
-                // 4. Send the file
-                var fileStream = await selectedFile.OpenStreamForReadAsync();
-                while (fileStream.Position < (long)prop.Size)
+                using (StreamSocket socket = new StreamSocket())
+                using (var dw = new DataWriter(socket.OutputStream))
                 {
-                    var rlen = await fileStream.ReadAsync(output, 0, output.Length);
-                    dw.WriteBytes(output);
+                    await socket.ConnectAsync(_LOCAL, _port);
+                    // Write byte current step
+                    dw.WriteByte((byte)Step.DownloadFileWhithHash);
+                    // Send lenght hash
+                    dw.WriteUInt32((UInt32)_cryptoUtils.GetHashFile.Length);
+                    // Send hash
+                    dw.WriteBytes(_cryptoUtils.GetHashFile);
+                    // Send the filename length
+                    dw.WriteInt32(file.Name.Length); // filename length is fixed
+                    // Send the filename
+                    dw.WriteString(file.Name);
+                    // Send the file length
+                    dw.WriteUInt64(prop.Size);
+                    // Send the file
+                    var fileStream = await file.OpenStreamForReadAsync();
+                    while (fileStream.Position < (long)prop.Size)
+                    {
+                        var rlen = await fileStream.ReadAsync(output, 0, output.Length);
+                        dw.WriteBytes(output);
+                    }
+
+                    await dw.FlushAsync();
+                    await dw.StoreAsync();
+
+                    await socket.OutputStream.FlushAsync();
                 }
-
-                await dw.FlushAsync();
-                await dw.StoreAsync();
-
-                await socket.OutputStream.FlushAsync();
+            }
+            else
+            {
+                DialogBoxInfo dlg = new DialogBoxInfo("File not found!", "Error");
+                dlg.ShowDialog();
             }
         }
+        private async Task DownloadFileAsync(DataReader rw)
+        {
+            Debug.WriteLine("--->> DownloadFileAsync");
 
+            await rw.LoadAsync(sizeof(Int32));
+            UInt32 lenght = rw.ReadUInt32();
+            // get lenght hash
+            byte[] outValue = new byte[lenght]; 
+            // download hash
+            await rw.LoadAsync(lenght);
+            rw.ReadBytes(outValue);
+            _cryptoUtils.GetHashFile = outValue;
+
+            StorageFile file;
+            //1. Read the filename lenght
+            await rw.LoadAsync(sizeof(Int32));
+            var fileNameLenght = (uint)rw.ReadInt32();
+            // 2. Read the filename
+            await rw.LoadAsync(fileNameLenght);
+            var originalFileName = rw.ReadString(fileNameLenght);
+            // 3. Read the file length
+            await rw.LoadAsync(sizeof(UInt64));
+            var fileLenght = rw.ReadUInt64();
+
+            // 4. Read file
+            using (var memStream = await DownloadFile(rw, fileLenght))
+            {
+                file = await _workFolder.CreateFileAsync(originalFileName, CreationCollisionOption.ReplaceExisting);
+                using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                {
+                    await RandomAccessStream.CopyAndCloseAsync(memStream.GetInputStreamAt(0), fileStream.GetOutputStreamAt(0));
+                }
+            }
+
+            // compare the hash value
+            _cryptoUtils.CompareHash(file);
+        }
         private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader rw, ulong fileLength)
         {
             var memStream = new InMemoryRandomAccessStream();
@@ -458,7 +501,6 @@ namespace DocDirect.ViewModel
             // Download the file
             while (memStream.Position < fileLength)
             {
-                //Verbose(string.Format("Receiving file...{0}/{1} bytes", memStream.Position, fileLength));
                 var lenToRead = Math.Min(1024, fileLength - memStream.Position);
                 await rw.LoadAsync((uint)lenToRead);
                 var tempBuff = rw.ReadBuffer((uint)lenToRead);
@@ -467,7 +509,60 @@ namespace DocDirect.ViewModel
 
             return memStream;
         }
-        #endregion
+        private async Task ExchangeKeySend()
+        {
+            Debug.WriteLine("--->> ExchangeKeySend");
+
+            using (StreamSocket socket = new StreamSocket())
+            using (var dw = new DataWriter(socket.OutputStream))
+            {
+                await socket.ConnectAsync(_LOCAL, _port);
+
+                // Write byte current step
+                dw.WriteByte((byte)Step.ExchangeKey);
+
+                dw.WriteUInt64(_cryptoUtils.distributedKey);
+                // Write open key
+                dw.WriteUInt64(_cryptoUtils.PublicKey.E);
+                dw.WriteUInt64(_cryptoUtils.PublicKey.N);
+
+                await dw.FlushAsync();
+                await dw.StoreAsync();
+
+                await socket.OutputStream.FlushAsync();
+            }
+        }
+        private async Task ExchangeKeyDownload(DataReader dr) 
+        {
+            Debug.WriteLine("--->> ExchangeKeyDownload");
+
+            await dr.LoadAsync(sizeof(UInt64));
+            _cryptoUtils.distributedKey = dr.ReadUInt64();
+
+            await dr.LoadAsync(sizeof(UInt64));
+            _cryptoUtils.PublicKey.E = dr.ReadUInt64();
+
+            await dr.LoadAsync(sizeof(UInt64));
+            _cryptoUtils.PublicKey.N = dr.ReadUInt64();
+
+            dr.DetachStream();
+
+            _cryptoUtils.GenerateGeneralKey();
+            _cryptoUtils.GenerateHash();
+
+            await SendFileAsync();
+        }
+        private void SuccessfulTransmission()
+        {
+            DialogBoxInfo dlg = new DialogBoxInfo("File has been successfully sent!", "Info");
+            dlg.ShowDialog();
+        }
+        private void TransmissionError()
+        {
+            DialogBoxInfo dlg = new DialogBoxInfo("Send a file failed!", "Info");
+            dlg.ShowDialog();
+        }
+        #endregion FileTransfer
 
         #region Socket
         private async Task ConnectCom(CancellationToken token = new CancellationToken())

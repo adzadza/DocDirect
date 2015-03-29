@@ -80,6 +80,7 @@
     <Compile Include="Converters\BackgroundConverter.cs" />
     <Compile Include="Converters\NameFileConverter.cs" />
     <Compile Include="Converters\GridIconConverter.cs" />
+    <Compile Include="CryptoUtils\CryptoUtils.cs" />
     <Compile Include="Navigation\IPageResolver.cs" />
     <Compile Include="Navigation\Navigation.cs" />
     <Compile Include="Navigation\PagesResolver .cs" />
@@ -102,7 +103,6 @@
     <Compile Include="Views\FilesList.xaml.cs">
       <DependentUpon>FilesList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileTransfer.cs" />
     <Compile Include="Styles\TextBoxSearch.xaml.cs">
       <DependentUpon>TextBoxSearch.xaml</DependentUpon>
     </Compile>
@@ -331,6 +331,7 @@
     <Resource Include="Resourses\Icon\DocIcon\wmv.png" />
     <Resource Include="Resourses\Icon\DocIcon\zip.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

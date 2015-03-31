@@ -35,7 +35,8 @@ namespace DocDirect.ViewModel
         private FileViewModel    _selectedFile;
         private uint             _sizeBufer = 1024;
         private String           _port = "22112";
-        private HostName         _LOCAL = new HostName("192.168.56.1"); // DEBUG
+        private HostName         _LOCAL = new HostName("192.168.1.51"); // DEBUG
+        private HostName         _REMOVE = new HostName("192.168.1.38"); // DEBUG
         #endregion
 
         #region Constructor
@@ -354,7 +355,7 @@ namespace DocDirect.ViewModel
                 await Listener.BindEndpointAsync(_LOCAL, _port);
 
                 _workFolder = await StorageFolder.GetFolderFromPathAsync(_workFolderName);
-                __workFolder = await StorageFolder.GetFolderFromPathAsync(@"D:\Doc");
+                //__workFolder = await StorageFolder.GetFolderFromPathAsync(@"D:\Doc");
             }
             catch (Exception ex)
             {
@@ -393,11 +394,14 @@ namespace DocDirect.ViewModel
 
                 switch(step)
                 {
-                    case (Byte)Step.ExchangeKey:
+                    case (Byte)Step.SendKey:
                         await ExchangeKeyDownload(dr);
                         break;
+                    case (Byte)Step.ReturnKey:
+                        await ReturnKeyDownload(dr);
+                        break;
                     case (Byte)Step.DownloadFileWhithHash:
-                        await DownloadFileAsync(dr);
+                        await SendFileAsync();
                         break;
                     case (Byte)Step.SuccessfulTransmission:
                         SuccessfulTransmission();
@@ -405,6 +409,8 @@ namespace DocDirect.ViewModel
                     case (Byte)Step.TransmissionError:
                         TransmissionError();
                         break;
+                    default:
+                        return;
                 }
                 dr.DetachStream();
             }
@@ -417,6 +423,7 @@ namespace DocDirect.ViewModel
             if (CoreApplication.Properties.TryGetValue("FileSend", out outValue))
             {
                 StorageFile file = outValue as StorageFile;
+                byte[] hashFile = _cryptoUtils.GenerateHashFile(file);
 
                 byte[] output = new byte[_sizeBufer];
                 var prop = await file.GetBasicPropertiesAsync();
@@ -424,13 +431,13 @@ namespace DocDirect.ViewModel
                 using (StreamSocket socket = new StreamSocket())
                 using (var dw = new DataWriter(socket.OutputStream))
                 {
-                    await socket.ConnectAsync(_LOCAL, _port);
+                    await socket.ConnectAsync(_REMOVE, _port);
                     // Write byte current step
                     dw.WriteByte((byte)Step.DownloadFileWhithHash);
                     // Send lenght hash
-                    dw.WriteUInt32((UInt32)_cryptoUtils.GetHashFile.Length);
+                    dw.WriteUInt32((UInt32)hashFile.Length);
                     // Send hash
-                    dw.WriteBytes(_cryptoUtils.GetHashFile);
+                    dw.WriteBytes(hashFile);
                     // Send the filename length
                     dw.WriteInt32(file.Name.Length); // filename length is fixed
                     // Send the filename
@@ -461,14 +468,14 @@ namespace DocDirect.ViewModel
         {
             Debug.WriteLine("--->> DownloadFileAsync");
 
-            await rw.LoadAsync(sizeof(Int32));
-            UInt32 lenght = rw.ReadUInt32();
             // get lenght hash
-            byte[] outValue = new byte[lenght]; 
+            await rw.LoadAsync(sizeof(UInt32));
+            UInt32 lenght = rw.ReadUInt32();
+            
+            byte[] hashFile = new byte[lenght]; 
             // download hash
             await rw.LoadAsync(lenght);
-            rw.ReadBytes(outValue);
-            _cryptoUtils.GetHashFile = outValue;
+            rw.ReadBytes(hashFile);
 
             StorageFile file;
             //1. Read the filename lenght
@@ -492,7 +499,11 @@ namespace DocDirect.ViewModel
             }
 
             // compare the hash value
-            _cryptoUtils.CompareHash(file);
+            if(_cryptoUtils.CompareHash(file, hashFile))
+            {
+                DialogBoxInfo dlg = new DialogBoxInfo("File is received, the hash value identical!", "Info");
+                dlg.ShowDialog();                
+            }
         }
         private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader rw, ulong fileLength)
         {
@@ -516,10 +527,10 @@ namespace DocDirect.ViewModel
             using (StreamSocket socket = new StreamSocket())
             using (var dw = new DataWriter(socket.OutputStream))
             {
-                await socket.ConnectAsync(_LOCAL, _port);
+                await socket.ConnectAsync(_REMOVE, _port);
 
                 // Write byte current step
-                dw.WriteByte((byte)Step.ExchangeKey);
+                dw.WriteByte((byte)Step.SendKey);
 
                 dw.WriteUInt64(_cryptoUtils.distributedKey);
                 // Write open key
@@ -547,11 +558,43 @@ namespace DocDirect.ViewModel
 
             dr.DetachStream();
 
-            _cryptoUtils.GenerateGeneralKey();
+            _cryptoUtils.GenerateSharedKey();
             _cryptoUtils.GenerateHash();
+
+            await ReturnKeySend();
+        }
+        private async Task ReturnKeySend()
+        {
+            Debug.WriteLine("--->> ExchangeKeySend");
+
+            using (StreamSocket socket = new StreamSocket())
+            using (var dw = new DataWriter(socket.OutputStream))
+            {
+                await socket.ConnectAsync(_REMOVE, _port);
+
+                // Write byte current step
+                dw.WriteByte((byte)Step.ReturnKey);
+
+                dw.WriteUInt64(_cryptoUtils.distributedKey);
+
+                await dw.FlushAsync();
+                await dw.StoreAsync();
+
+                await socket.OutputStream.FlushAsync();
+            }
+        }
+        private async Task ReturnKeyDownload(DataReader dr)
+        {
+            Debug.WriteLine("--->> ReturnKeyDownload");
+
+            await dr.LoadAsync(sizeof(UInt64));
+            _cryptoUtils.distributedKey = dr.ReadUInt64();
+           
+            dr.DetachStream();
 
             await SendFileAsync();
         }
+        
         private void SuccessfulTransmission()
         {
             DialogBoxInfo dlg = new DialogBoxInfo("File has been successfully sent!", "Info");

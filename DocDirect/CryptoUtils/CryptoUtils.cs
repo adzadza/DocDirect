@@ -10,7 +10,9 @@ using Windows.Storage;
 
 namespace DocDirect.Crypto
 {
-    enum Step : byte { ExchangeKey = 1, SendFileWhithHash, DownloadFileWhithHash, SuccessfulTransmission, TransmissionError };
+    enum Step : byte { SendKey = 1, DownloadKey, ReturnKey, 
+                       SendFileWhithHash, DownloadFileWhithHash, 
+                       SuccessfulTransmission, TransmissionError };
 
     public class CryptoUtils
     {
@@ -60,44 +62,33 @@ namespace DocDirect.Crypto
         #endregion
 
         #region Method
-        public void GenerateHash()
+        public byte[] GenerateHashFile(StorageFile _file)
         {
-            StorageFile _file;
-            object outValue;
-            if (CoreApplication.Properties.TryGetValue("FileSend", out outValue))
-            {
-                _file = (StorageFile)outValue;
-
-                _hashFile = GetMD5Hash(_file);
-            }
+            return GetMD5Hash(_file);            
         }
-        public void GenerateGeneralKey()
+        public void GenerateSharedKey()
         {
             // вычисляем общий ключ
             sharedKey = DiffiHelman.PowMod(distributedKey, randKey, P);
         }
 
-        public void CompareHash(StorageFile file)
+        public bool CompareHash(StorageFile file, byte[] hashFile)
         {
             byte[] tmpNewHashFile = GetMD5Hash(file);
 
             bool bEqual = true;
-            if (tmpNewHashFile.Length == _hashFile.Length)
+            if (tmpNewHashFile.Length == hashFile.Length)
             {
-                for(int i=0; i<_hashFile.Length-1; i++)
+                for(int i=0; i<hashFile.Length-1; i++)
                 {
-                    if (tmpNewHashFile[i] != _hashFile[i])
+                    if (tmpNewHashFile[i] != hashFile[i])
                     {
                         bEqual = false;
                         break;
                     }
                 }
             }
-            if(bEqual)
-            {
-                DialogBoxInfo dlg = new DialogBoxInfo("File is received, the hash value identical!", "Info");
-                dlg.ShowDialog();
-            }
+            return bEqual;
         }
         private byte[] GetMD5Hash(StorageFile file)
         {

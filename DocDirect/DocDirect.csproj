@@ -94,8 +94,8 @@
     <Compile Include="Views\AboutView.xaml.cs">
       <DependentUpon>AboutView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ClientInformation.xaml.cs">
-      <DependentUpon>ClientInformation.xaml</DependentUpon>
+    <Compile Include="Views\UserInformation.xaml.cs">
+      <DependentUpon>UserInformation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DialogWindow\DialogBoxInfo.xaml.cs">
       <DependentUpon>DialogBoxInfo.xaml</DependentUpon>
@@ -134,7 +134,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ClientInformation.xaml">
+    <Page Include="Views\UserInformation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

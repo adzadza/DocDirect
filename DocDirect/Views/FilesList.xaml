@@ -182,24 +182,7 @@
                     Content="{Binding SelectedFileSize}"
                     FontFamily="Segoe UI"
                     FontSize="16"/>
-            
-            <StackPanel Orientation="Horizontal" Grid.Column="2">
-                <Button x:Name="btnListener" 
-                        Content="Listener"
-                        Command="{Binding ListenerCommand}"
-                        Margin="3"/>
-
-                <Button x:Name="btnConnect"
-                        Content="Connect"
-                        Command="{Binding ConnectCommand}"
-                        Margin="3"/>
-                
-                <Button x:Name="btnSend"
-                        Content="Send"
-                        Command="{Binding SendCommand}"
-                        Margin="3"/>
-            </StackPanel>
-            
+                        
             <Button x:Name="btnThumbnailViewFile" Grid.Column="3"
                     Margin="0"
                     Style="{StaticResource ThumbnailViewFile}"

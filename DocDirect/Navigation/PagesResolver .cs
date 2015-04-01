@@ -15,7 +15,7 @@ namespace DocDirect.Navigator.Navigation
         {
             _pageResolver.Add(Navigation._filesListAlias, () => new FilesList());
             _pageResolver.Add(Navigation._aboutViewAlias, () => new AboutView());
-            _pageResolver.Add(Navigation._clientInforamationViewAlias, () => new ClientInformation());
+            _pageResolver.Add(Navigation._clientInforamationViewAlias, () => new UserInformation());
         }
 
         public Page GetPageInstance(string alias)

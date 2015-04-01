@@ -15,9 +15,9 @@ using System.Windows.Shapes;
 
 namespace DocDirect
 {
-    public partial class ClientInformation : Page
+    public partial class UserInformation : Page
     {
-        public ClientInformation()
+        public UserInformation()
         {
             InitializeComponent();
         }

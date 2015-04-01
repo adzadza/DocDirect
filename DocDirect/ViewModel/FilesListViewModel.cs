@@ -87,7 +87,7 @@ namespace DocDirect.ViewModel
                 if(_sizeSelectedFile!=value)
                 {
                     _sizeSelectedFile = value;
-                    OnPropertyChanged("CurrentSelectedFile");
+                    OnPropertyChanged("SelectedFileSize");
                 }
             }
         }
@@ -468,27 +468,27 @@ namespace DocDirect.ViewModel
         {
             Debug.WriteLine("--->> DownloadFileAsync");
 
-            // get lenght hash
+            //1. Get lenght hash
             await rw.LoadAsync(sizeof(UInt32));
             UInt32 lenght = rw.ReadUInt32();
             
             byte[] hashFile = new byte[lenght]; 
-            // download hash
+            //2. Download hash
             await rw.LoadAsync(lenght);
             rw.ReadBytes(hashFile);
 
             StorageFile file;
-            //1. Read the filename lenght
+            //3. Read the filename lenght
             await rw.LoadAsync(sizeof(Int32));
             var fileNameLenght = (uint)rw.ReadInt32();
-            // 2. Read the filename
+            // 4. Read the filename
             await rw.LoadAsync(fileNameLenght);
             var originalFileName = rw.ReadString(fileNameLenght);
-            // 3. Read the file length
+            // 5. Read the file length
             await rw.LoadAsync(sizeof(UInt64));
             var fileLenght = rw.ReadUInt64();
 
-            // 4. Read file
+            // 6. Read file
             using (var memStream = await DownloadFile(rw, fileLenght))
             {
                 file = await _workFolder.CreateFileAsync(originalFileName, CreationCollisionOption.ReplaceExisting);
@@ -502,7 +502,9 @@ namespace DocDirect.ViewModel
             if(_cryptoUtils.CompareHash(file, hashFile))
             {
                 DialogBoxInfo dlg = new DialogBoxInfo("File is received, the hash value identical!", "Info");
-                dlg.ShowDialog();                
+                dlg.ShowDialog();        
+                // 
+                await SendSuccessfulTransmission();
             }
         }
         private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader rw, ulong fileLength)
@@ -559,7 +561,7 @@ namespace DocDirect.ViewModel
             dr.DetachStream();
 
             _cryptoUtils.GenerateSharedKey();
-            _cryptoUtils.GenerateHash();
+            //_cryptoUtils.GenerateHash();
 
             await ReturnKeySend();
         }
@@ -595,6 +597,24 @@ namespace DocDirect.ViewModel
             await SendFileAsync();
         }
         
+        private async Task SendSuccessfulTransmission()
+        {
+            Debug.WriteLine("--->> SendSuccessfulTransmission");
+
+            using (StreamSocket socket = new StreamSocket())
+            using (var dw = new DataWriter(socket.OutputStream))
+            {
+                await socket.ConnectAsync(_REMOVE, _port);
+
+                // Write byte current step
+                dw.WriteByte((byte)Step.SuccessfulTransmission);
+
+                await dw.FlushAsync();
+                await dw.StoreAsync();
+
+                await socket.OutputStream.FlushAsync();
+            }
+        }
         private void SuccessfulTransmission()
         {
             DialogBoxInfo dlg = new DialogBoxInfo("File has been successfully sent!", "Info");

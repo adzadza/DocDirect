@@ -8,13 +8,14 @@
 
     <Grid DataContext="{Binding ElementName=DialogBox}">
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="info" Text="{Binding Path=MessageText, Mode=OneWay}" 
+        <TextBlock x:Name="info" Text="{Binding Path=MessageText}"
+                   TextWrapping="Wrap"
                    VerticalAlignment="Center" HorizontalAlignment="Center"
-                   FontFamily="Segoe UI" FontSize="20" Foreground="#4C4743"
+                   FontFamily="Segoe UI" FontSize="18" Foreground="#4C4743"
                    Grid.Row="0">  
         </TextBlock>
 

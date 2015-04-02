@@ -78,6 +78,7 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\Selected.cs" />
     <Compile Include="Converters\BackgroundConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\NameFileConverter.cs" />
     <Compile Include="Converters\GridIconConverter.cs" />
     <Compile Include="CryptoUtils\CryptoUtils.cs" />

@@ -18,25 +18,27 @@ using Windows.ApplicationModel.Core;
 using DocDirect.Commands.AsyncCommand;
 using DocDirect.Commands;
 using DocDirect.Crypto;
+using System.ComponentModel;
 
 namespace DocDirect.ViewModel
 {
     class FilesListViewModel : ViewModelBase
     {
         #region Fields
-        private ObservableCollection<FileViewModel> _filesList = new ObservableCollection<FileViewModel>();
-        private CryptoUtils     _cryptoUtils;
-        private string          _sizeSelectedFile;
-        private ulong           _countItem = 0;
-            
+        private ObservableCollection<FileViewModel> _filesList = new ObservableCollection<FileViewModel>();        
+        private CryptoUtils      _cryptoUtils;
+        private string           _sizeSelectedFile;
+        private ulong            _countItem = 0;
+        private int              _currentProgress;
+        private bool             _progressVisibility=false; 
+ 
         private String           _workFolderName = @"C:\Doc";
         private StorageFolder    _workFolder;
-        private StorageFolder    __workFolder;
         private FileViewModel    _selectedFile;
         private uint             _sizeBufer = 1024;
         private String           _port = "22112";
-        private HostName         _LOCAL = new HostName("192.168.1.51"); // DEBUG
-        private HostName         _REMOVE = new HostName("192.168.1.38"); // DEBUG
+        private HostName         _LocalHostName  = new HostName("192.168.1.46");   // DEBUG
+        private HostName         _RemoveHostName = new HostName("192.168.1.38");   // DEBUG
         #endregion
 
         #region Constructor
@@ -46,6 +48,8 @@ namespace DocDirect.ViewModel
 
             _filesList = GetFiles();
             _cryptoUtils = new CryptoUtils();
+
+            ProgressVisibility = false;
         }
 
         private void InitialisCommands()
@@ -56,17 +60,11 @@ namespace DocDirect.ViewModel
             this.RemoveFileCommand = new RelayCommand(param => this.RemoveFile(param));
             this.CopyFileCommand = new RelayCommand(param => this.CopyFile(param));
             this.PastFileCommand = new RelayCommand(param => this.PastFile());
-
-            //this.SendFileCommand = new RelayCommand(param => this.SendFileToClient(param));
-
+            
             this.SendFileCommandAsync = AsyncCommand.Create(token => this.SendFileToClient(CurrentSelectedFile, token));
             this.InitialisStreamSocketAsync = AsyncCommand.Create(tocken => this.InitialisStreamSocket(tocken));
 
             InitialisStreamSocketAsync.Execute(null);
-
-            //ConnectCommand = AsyncCommand.Create(param => this.ConnectCom(param));
-            //ListenerCommand = AsyncCommand.Create(param => this.ListenerCom(param));
-            //SendCommand = AsyncCommand.Create(param => this.SendCom(param));
         }
         #endregion
 
@@ -106,7 +104,28 @@ namespace DocDirect.ViewModel
                 _countItem = value;
                 OnPropertyChanged("CountItem");
             }
-        }        
+        }
+        public int CurrentProgressDownload
+        {
+            get { return this._currentProgress; }
+            private set
+            {
+                if (this._currentProgress != value)
+                {
+                    this._currentProgress = value;
+                    this.OnPropertyChanged("CurrentProgressDownload");
+                }
+            }
+        }
+        public bool ProgressVisibility 
+        {
+            get { return _progressVisibility; }
+            set
+            {
+                _progressVisibility = value;
+                OnPropertyChanged("ProgressVisibility");
+            }
+        }
         #endregion
 
         #region Commands
@@ -121,9 +140,7 @@ namespace DocDirect.ViewModel
         public IAsyncCommand SendFileCommandAsync { get; private set; }
         public IAsyncCommand InitialisStreamSocketAsync { get; private set; }
 
-        public IAsyncCommand ConnectCommand { get; private set; }
-        public IAsyncCommand ListenerCommand { get; private set; }
-        public IAsyncCommand SendCommand { get; private set; }
+        public ICommand DownloadFileProgressCommand { get; private set; }
         #endregion
 
         #region Method
@@ -236,6 +253,11 @@ namespace DocDirect.ViewModel
                 }                
             }
         }
+
+        private void ReportProgress(int value)
+        {
+            this.CurrentProgressDownload = value;
+        }
         #endregion
 
         #region Handler Command
@@ -325,8 +347,7 @@ namespace DocDirect.ViewModel
                         }
                     }
                     catch (Exception) { }
-                }
-               
+                }               
             }
         }
         private void SetCommandSelected(object param)
@@ -352,14 +373,14 @@ namespace DocDirect.ViewModel
 
                 CoreApplication.Properties.Add("Listener", Listener);
 
-                await Listener.BindEndpointAsync(_LOCAL, _port);
+                await Listener.BindEndpointAsync(_LocalHostName, _port);
 
                 _workFolder = await StorageFolder.GetFolderFromPathAsync(_workFolderName);
-                //__workFolder = await StorageFolder.GetFolderFromPathAsync(@"D:\Doc");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                CoreApplication.Properties.Remove("Listener");
             }
         }
         private async Task SendFileToClient(object param, CancellationToken token = new CancellationToken())
@@ -371,10 +392,9 @@ namespace DocDirect.ViewModel
                 if (System.IO.File.Exists(file.Path))
                 {
                     StorageFile fileStorage = await StorageFile.GetFileFromPathAsync(file.Path);
-                    if (!CoreApplication.Properties.ContainsKey("FileSend"))
-                    {
-                        CoreApplication.Properties.Add("FileSend", fileStorage);
-                    }
+                    
+                    CoreApplication.Properties.Remove("FileSend");                    
+                    CoreApplication.Properties.Add("FileSend", fileStorage);
 
                     await ExchangeKeySend();
                 }
@@ -401,7 +421,7 @@ namespace DocDirect.ViewModel
                         await ReturnKeyDownload(dr);
                         break;
                     case (Byte)Step.DownloadFileWhithHash:
-                        await SendFileAsync();
+                        await DownloadFileAsync(dr);
                         break;
                     case (Byte)Step.SuccessfulTransmission:
                         SuccessfulTransmission();
@@ -410,13 +430,13 @@ namespace DocDirect.ViewModel
                         TransmissionError();
                         break;
                     default:
-                        return;
+                        break;
                 }
                 dr.DetachStream();
             }
         }
 
-        public async Task SendFileAsync()
+        public async Task SendFileAsync(IProgress<int> progress)
         {            
             Debug.WriteLine("---> SendFileAsync <----\n");
             object outValue;
@@ -431,7 +451,7 @@ namespace DocDirect.ViewModel
                 using (StreamSocket socket = new StreamSocket())
                 using (var dw = new DataWriter(socket.OutputStream))
                 {
-                    await socket.ConnectAsync(_REMOVE, _port);
+                    await socket.ConnectAsync(_RemoveHostName, _port);
                     // Write byte current step
                     dw.WriteByte((byte)Step.DownloadFileWhithHash);
                     // Send lenght hash
@@ -446,11 +466,16 @@ namespace DocDirect.ViewModel
                     dw.WriteUInt64(prop.Size);
                     // Send the file
                     var fileStream = await file.OpenStreamForReadAsync();
+                    ProgressVisibility = true;
                     while (fileStream.Position < (long)prop.Size)
                     {
+                        // сalculate the percentage of downloaded data
+                        progress.Report(Convert.ToInt32((fileStream.Position * 100) / (long)prop.Size));
+
                         var rlen = await fileStream.ReadAsync(output, 0, output.Length);
                         dw.WriteBytes(output);
                     }
+                    ProgressVisibility = false;
 
                     await dw.FlushAsync();
                     await dw.StoreAsync();
@@ -467,7 +492,7 @@ namespace DocDirect.ViewModel
         private async Task DownloadFileAsync(DataReader rw)
         {
             Debug.WriteLine("--->> DownloadFileAsync");
-
+           
             //1. Get lenght hash
             await rw.LoadAsync(sizeof(UInt32));
             UInt32 lenght = rw.ReadUInt32();
@@ -487,9 +512,12 @@ namespace DocDirect.ViewModel
             // 5. Read the file length
             await rw.LoadAsync(sizeof(UInt64));
             var fileLenght = rw.ReadUInt64();
-
+            
+            var progressIndicator = new Progress<int>(ReportProgress);
+            ProgressVisibility = true;
+            
             // 6. Read file
-            using (var memStream = await DownloadFile(rw, fileLenght))
+            using (var memStream = await DownloadFile(rw, fileLenght, progressIndicator))
             {
                 file = await _workFolder.CreateFileAsync(originalFileName, CreationCollisionOption.ReplaceExisting);
                 using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
@@ -497,23 +525,26 @@ namespace DocDirect.ViewModel
                     await RandomAccessStream.CopyAndCloseAsync(memStream.GetInputStreamAt(0), fileStream.GetOutputStreamAt(0));
                 }
             }
-
+            
+            ProgressVisibility = false;
             // compare the hash value
             if(_cryptoUtils.CompareHash(file, hashFile))
             {
-                DialogBoxInfo dlg = new DialogBoxInfo("File is received, the hash value identical!", "Info");
-                dlg.ShowDialog();        
+                //DialogBoxInfo dlg = new DialogBoxInfo("File is received, the hash value identical!", "Info");
+                //dlg.ShowDialog();        
                 // 
                 await SendSuccessfulTransmission();
             }
         }
-        private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader rw, ulong fileLength)
+        private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader rw, ulong fileLength, IProgress<int> progress)
         {
             var memStream = new InMemoryRandomAccessStream();
-
             // Download the file
             while (memStream.Position < fileLength)
             {
+                // сalculate the percentage of downloaded data
+                progress.Report( Convert.ToInt32((memStream.Position * 100) / fileLength));
+
                 var lenToRead = Math.Min(1024, fileLength - memStream.Position);
                 await rw.LoadAsync((uint)lenToRead);
                 var tempBuff = rw.ReadBuffer((uint)lenToRead);
@@ -529,7 +560,7 @@ namespace DocDirect.ViewModel
             using (StreamSocket socket = new StreamSocket())
             using (var dw = new DataWriter(socket.OutputStream))
             {
-                await socket.ConnectAsync(_REMOVE, _port);
+                await socket.ConnectAsync(_RemoveHostName, _port);
 
                 // Write byte current step
                 dw.WriteByte((byte)Step.SendKey);
@@ -567,12 +598,12 @@ namespace DocDirect.ViewModel
         }
         private async Task ReturnKeySend()
         {
-            Debug.WriteLine("--->> ExchangeKeySend");
+            Debug.WriteLine("--->> ReturnKeySend");
 
             using (StreamSocket socket = new StreamSocket())
             using (var dw = new DataWriter(socket.OutputStream))
             {
-                await socket.ConnectAsync(_REMOVE, _port);
+                await socket.ConnectAsync(_RemoveHostName, _port);
 
                 // Write byte current step
                 dw.WriteByte((byte)Step.ReturnKey);
@@ -604,7 +635,7 @@ namespace DocDirect.ViewModel
             using (StreamSocket socket = new StreamSocket())
             using (var dw = new DataWriter(socket.OutputStream))
             {
-                await socket.ConnectAsync(_REMOVE, _port);
+                await socket.ConnectAsync(_RemoveHostName, _port);
 
                 // Write byte current step
                 dw.WriteByte((byte)Step.SuccessfulTransmission);
@@ -617,116 +648,18 @@ namespace DocDirect.ViewModel
         }
         private void SuccessfulTransmission()
         {
-            DialogBoxInfo dlg = new DialogBoxInfo("File has been successfully sent!", "Info");
-            dlg.ShowDialog();
+            Debug.WriteLine("--->> SuccessfulTransmission");
+                        
+            //DialogBoxInfo dlg = new DialogBoxInfo("File has been successfully sent!", "Info");
+            //dlg.ShowDialog();
         }
         private void TransmissionError()
         {
+            Debug.WriteLine("--->> TransmissionError");
+
             DialogBoxInfo dlg = new DialogBoxInfo("Send a file failed!", "Info");
             dlg.ShowDialog();
         }
         #endregion FileTransfer
-
-        #region Socket
-        private async Task ConnectCom(CancellationToken token = new CancellationToken())
-        {
-            StreamSocket Socket = new StreamSocket();
-
-            CoreApplication.Properties.Add("Socket", Socket);
-
-            try
-            {
-                await Socket.ConnectAsync(new HostName("192.168.56.1"), "22112");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private async Task ListenerCom(CancellationToken token = new CancellationToken())
-        {
-            try
-            {
-                StreamSocketListener Listener = new StreamSocketListener();
-                Listener.ConnectionReceived += OnClientConnection;
-
-                CoreApplication.Properties.Add("Listener", Listener);
-
-                await Listener.BindEndpointAsync(new HostName("192.168.56.1"), "22112");
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private async Task SendCom(object param)
-        {
-            object outValue ;
-            StreamSocket Socket;
-
-            if (!CoreApplication.Properties.TryGetValue("Socket", out outValue))
-            {
-                MessageBox.Show("Not Socket");
-                return;
-            }
-
-            Socket = (StreamSocket)outValue; 
-
-            try
-            {
-                DataWriter writer;
-                if (!CoreApplication.Properties.TryGetValue("DataWriter", out outValue))
-                {
-                    writer = new DataWriter(Socket.OutputStream);
-                    CoreApplication.Properties.Add("DataWriter", writer);
-                }
-                else
-                {
-                    writer = (DataWriter)outValue;
-                }
-
-                string stringToSend = "Hello World!";
-                writer.WriteUInt32(writer.MeasureString(stringToSend));
-                writer.WriteString(stringToSend);
-            
-                await writer.StoreAsync();
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
-        }
-        private async void OnClientConnection(StreamSocketListener listener,
-                                              StreamSocketListenerConnectionReceivedEventArgs args)
-        {
-            DataReader reader = new DataReader(args.Socket.InputStream);
-            try
-            {
-                while (true)
-                {
-                    uint sizeFieldCount = await reader.LoadAsync(sizeof(uint));
-                    if (sizeFieldCount != sizeof(uint))
-                    {
-                        return;
-                    }
-
-                    uint stringLength = reader.ReadUInt32();
-                    uint actualStringLength = await reader.LoadAsync(stringLength);
-                    if (stringLength != actualStringLength)
-                    {
-                        return;
-                    }
-                    
-                    MessageBox.Show("Received data: " + reader.ReadString(actualStringLength));
-                }
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
-        }
-        #endregion
     }
 }

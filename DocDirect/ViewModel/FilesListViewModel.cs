@@ -26,19 +26,20 @@ namespace DocDirect.ViewModel
     {
         #region Fields
         private ObservableCollection<FileViewModel> _filesList = new ObservableCollection<FileViewModel>();        
-        private CryptoUtils      _cryptoUtils;
-        private string           _sizeSelectedFile;
-        private ulong            _countItem = 0;
-        private int              _currentProgress;
-        private bool             _progressVisibility=false; 
+        private CryptoUtils     _cryptoUtils;
+        private string          _sizeSelectedFile;
+        private string          _downloadOrUploadFileName;
+        private ulong           _countItem = 0;
+        private UInt64          _currentProgress;
+        private bool            _progressVisibility=false; 
  
-        private String           _workFolderName = @"C:\Doc";
-        private StorageFolder    _workFolder;
-        private FileViewModel    _selectedFile;
-        private uint             _sizeBufer = 1024;
-        private String           _port = "22112";
-        private HostName         _LocalHostName  = new HostName("192.168.1.46");   // DEBUG
-        private HostName         _RemoveHostName = new HostName("192.168.1.38");   // DEBUG
+        private String          _workFolderName = @"C:\Doc";
+        private StorageFolder   _workFolder;
+        private FileViewModel   _selectedFile;
+        private uint            _sizeBufer = 1024;
+        private String          _port = "22112";
+        private HostName        _LocalHostName  = new HostName("192.168.1.46");   // DEBUG
+        private HostName        _RemoveHostName = new HostName("192.168.1.38");   // DEBUG
         #endregion
 
         #region Constructor
@@ -48,8 +49,6 @@ namespace DocDirect.ViewModel
 
             _filesList = GetFiles();
             _cryptoUtils = new CryptoUtils();
-
-            ProgressVisibility = false;
         }
 
         private void InitialisCommands()
@@ -105,7 +104,7 @@ namespace DocDirect.ViewModel
                 OnPropertyChanged("CountItem");
             }
         }
-        public int CurrentProgressDownload
+        public UInt64 CurrentProgressDownload
         {
             get { return this._currentProgress; }
             private set
@@ -124,6 +123,15 @@ namespace DocDirect.ViewModel
             {
                 _progressVisibility = value;
                 OnPropertyChanged("ProgressVisibility");
+            }
+        }
+        public string DownloadOrUploadFileName
+        {
+            get { return _downloadOrUploadFileName; }
+            set
+            {
+                _downloadOrUploadFileName = value;
+                OnPropertyChanged("DownloadOrUploadFileName");
             }
         }
         #endregion
@@ -254,7 +262,7 @@ namespace DocDirect.ViewModel
             }
         }
 
-        private void ReportProgress(int value)
+        private void ReportProgress(UInt64 value)
         {
             this.CurrentProgressDownload = value;
         }
@@ -436,7 +444,7 @@ namespace DocDirect.ViewModel
             }
         }
 
-        public async Task SendFileAsync(IProgress<int> progress)
+        public async Task SendFileAsync(IProgress<UInt64> progress)
         {            
             Debug.WriteLine("---> SendFileAsync <----\n");
             object outValue;
@@ -466,11 +474,13 @@ namespace DocDirect.ViewModel
                     dw.WriteUInt64(prop.Size);
                     // Send the file
                     var fileStream = await file.OpenStreamForReadAsync();
-                    ProgressVisibility = true;
-                    while (fileStream.Position < (long)prop.Size)
+
+                    this.DownloadOrUploadFileName = file.Name;
+                    this.ProgressVisibility = true;
+                    while ((ulong)fileStream.Position < prop.Size)
                     {
                         // сalculate the percentage of downloaded data
-                        progress.Report(Convert.ToInt32((fileStream.Position * 100) / (long)prop.Size));
+                        progress.Report(Convert.ToUInt64(((ulong)fileStream.Position * 100) / prop.Size));
 
                         var rlen = await fileStream.ReadAsync(output, 0, output.Length);
                         dw.WriteBytes(output);
@@ -485,39 +495,40 @@ namespace DocDirect.ViewModel
             }
             else
             {
-                DialogBoxInfo dlg = new DialogBoxInfo("File not found!", "Error");
-                dlg.ShowDialog();
+                //DialogBoxInfo dlg = new DialogBoxInfo("File not found!", "Error");
+                //dlg.ShowDialog();
             }
         }
-        private async Task DownloadFileAsync(DataReader rw)
+        private async Task DownloadFileAsync(DataReader dr)
         {
             Debug.WriteLine("--->> DownloadFileAsync");
            
             //1. Get lenght hash
-            await rw.LoadAsync(sizeof(UInt32));
-            UInt32 lenght = rw.ReadUInt32();
+            await dr.LoadAsync(sizeof(UInt32));
+            UInt32 lenght = dr.ReadUInt32();
             
             byte[] hashFile = new byte[lenght]; 
             //2. Download hash
-            await rw.LoadAsync(lenght);
-            rw.ReadBytes(hashFile);
+            await dr.LoadAsync(lenght);
+            dr.ReadBytes(hashFile);
 
             StorageFile file;
             //3. Read the filename lenght
-            await rw.LoadAsync(sizeof(Int32));
-            var fileNameLenght = (uint)rw.ReadInt32();
+            await dr.LoadAsync(sizeof(Int32));
+            var fileNameLenght = (uint)dr.ReadInt32();
             // 4. Read the filename
-            await rw.LoadAsync(fileNameLenght);
-            var originalFileName = rw.ReadString(fileNameLenght);
+            await dr.LoadAsync(fileNameLenght);
+            var originalFileName = dr.ReadString(fileNameLenght);
             // 5. Read the file length
-            await rw.LoadAsync(sizeof(UInt64));
-            var fileLenght = rw.ReadUInt64();
+            await dr.LoadAsync(sizeof(UInt64));
+            var fileLenght = dr.ReadUInt64();
             
-            var progressIndicator = new Progress<int>(ReportProgress);
-            ProgressVisibility = true;
+            var progressIndicator = new Progress<UInt64>(ReportProgress);
+            this.DownloadOrUploadFileName = originalFileName;
+            this.ProgressVisibility = true;
             
             // 6. Read file
-            using (var memStream = await DownloadFile(rw, fileLenght, progressIndicator))
+            using (var memStream = await DownloadFile(dr, fileLenght, progressIndicator))
             {
                 file = await _workFolder.CreateFileAsync(originalFileName, CreationCollisionOption.ReplaceExisting);
                 using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
@@ -532,22 +543,22 @@ namespace DocDirect.ViewModel
             {
                 //DialogBoxInfo dlg = new DialogBoxInfo("File is received, the hash value identical!", "Info");
                 //dlg.ShowDialog();        
-                // 
+                
                 await SendSuccessfulTransmission();
             }
         }
-        private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader rw, ulong fileLength, IProgress<int> progress)
+        private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader dr, ulong fileLength, IProgress<UInt64> progress)
         {
             var memStream = new InMemoryRandomAccessStream();
             // Download the file
             while (memStream.Position < fileLength)
             {
                 // сalculate the percentage of downloaded data
-                progress.Report( Convert.ToInt32((memStream.Position * 100) / fileLength));
+                progress.Report( Convert.ToUInt64(((ulong)memStream.Position * 100) / fileLength));
 
                 var lenToRead = Math.Min(1024, fileLength - memStream.Position);
-                await rw.LoadAsync((uint)lenToRead);
-                var tempBuff = rw.ReadBuffer((uint)lenToRead);
+                await dr.LoadAsync((uint)lenToRead);
+                var tempBuff = dr.ReadBuffer((uint)lenToRead);
                 await memStream.WriteAsync(tempBuff);
             }
 
@@ -625,7 +636,8 @@ namespace DocDirect.ViewModel
            
             dr.DetachStream();
 
-            await SendFileAsync();
+            var progressIndicator = new Progress<UInt64>(ReportProgress);
+            await SendFileAsync(progressIndicator);
         }
         
         private async Task SendSuccessfulTransmission()
@@ -657,8 +669,8 @@ namespace DocDirect.ViewModel
         {
             Debug.WriteLine("--->> TransmissionError");
 
-            DialogBoxInfo dlg = new DialogBoxInfo("Send a file failed!", "Info");
-            dlg.ShowDialog();
+            //DialogBoxInfo dlg = new DialogBoxInfo("Send a file failed!", "Info");
+            //dlg.ShowDialog();
         }
         #endregion FileTransfer
     }

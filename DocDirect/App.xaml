@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="Styles/ButtonStyleDictionary.xaml"/>
                 <ResourceDictionary Source="Styles/SliderThumbStyle.xaml"/>
                 <ResourceDictionary Source="Themes/Generic.xaml"/>
+                <ResourceDictionary Source="Styles/ProgressBarStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

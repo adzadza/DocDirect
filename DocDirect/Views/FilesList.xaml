@@ -165,7 +165,9 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="70"/>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
@@ -185,16 +187,22 @@
                     FontFamily="Segoe UI"
                     FontSize="16"/>
 
+            <TextBlock Text="{Binding DownloadOrUploadFileName}"
+                       Visibility="{Binding ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       Grid.Column="3" FontFamily="Segoe UI Symbol" FontSize="15"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"/>
+            
             <ProgressBar Value="{Binding CurrentProgressDownload, Mode=OneWay}" 
                          Visibility="{Binding ProgressVisibility, Converter={StaticResource BooleanToVisibilityConverter}}"
-                         Grid.Column="3" Width="100" Height="20"/>
+                         Grid.Column="4" Width="100" Height="20"/>
             
-            <Button x:Name="btnThumbnailViewFile" Grid.Column="4"
+            <Button x:Name="btnThumbnailViewFile" Grid.Column="6"
                     Margin="0"
                     Style="{StaticResource ThumbnailViewFile}"
                     Click="btnThumbnailViewFile_Click"/>
             
-            <Button x:Name="btnTileViewFile" Grid.Column="5"
+            <Button x:Name="btnTileViewFile" Grid.Column="8"
                     Margin="0"
                     Style="{StaticResource TileViewFile}"
                     Click="btnTileViewFile_Click"/>

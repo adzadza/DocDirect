@@ -419,28 +419,37 @@ namespace DocDirect.ViewModel
             {
                 await dr.LoadAsync(sizeof(Byte));
                 byte step = dr.ReadByte();
-
-                switch(step)
+                try
                 {
-                    case (Byte)Step.SendKey:
-                        await ExchangeKeyDownload(dr);
-                        break;
-                    case (Byte)Step.ReturnKey:
-                        await ReturnKeyDownload(dr);
-                        break;
-                    case (Byte)Step.DownloadFileWhithHash:
-                        await DownloadFileAsync(dr);
-                        break;
-                    case (Byte)Step.SuccessfulTransmission:
-                        SuccessfulTransmission();
-                        break;
-                    case (Byte)Step.TransmissionError:
-                        TransmissionError();
-                        break;
-                    default:
-                        break;
+                    switch (step)
+                    {
+                        case (Byte)Step.SendKey:
+                            await ExchangeKeyDownload(dr);
+                            break;
+                        case (Byte)Step.ReturnKey:
+                            await ReturnKeyDownload(dr);
+                            break;
+                        case (Byte)Step.DownloadFileWhithHash:
+                            await DownloadFileAsync(dr);
+                            break;
+                        case (Byte)Step.SuccessfulTransmission:
+                            SuccessfulTransmission();
+                            break;
+                        case (Byte)Step.TransmissionError:
+                            TransmissionError();
+                            break;
+                        default:
+                            break;
+                    }
                 }
-                dr.DetachStream();
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("--> Error in OnClientConnectionReceived: " + ex.Message);
+                }
+                finally
+                {
+                    dr.DetachStream();
+                }
             }
         }
 
@@ -453,6 +462,9 @@ namespace DocDirect.ViewModel
                 StorageFile file = outValue as StorageFile;
                 byte[] hashFile = _cryptoUtils.GenerateHashFile(file);
 
+                // generate a digital signature for the hash file
+                UInt64 hash = _cryptoUtils.DigitalSignature(hashFile);
+
                 byte[] output = new byte[_sizeBufer];
                 var prop = await file.GetBasicPropertiesAsync();
 
@@ -463,9 +475,9 @@ namespace DocDirect.ViewModel
                     // Write byte current step
                     dw.WriteByte((byte)Step.DownloadFileWhithHash);
                     // Send lenght hash
-                    dw.WriteUInt32((UInt32)hashFile.Length);
+                    //dw.WriteUInt32(sizeof(UInt32));
                     // Send hash
-                    dw.WriteBytes(hashFile);
+                    dw.WriteUInt64(hash);
                     // Send the filename length
                     dw.WriteInt32(file.Name.Length); // filename length is fixed
                     // Send the filename
@@ -482,7 +494,7 @@ namespace DocDirect.ViewModel
                         // сalculate the percentage of downloaded data
                         progress.Report(Convert.ToUInt64(((ulong)fileStream.Position * 100) / prop.Size));
 
-                        var rlen = await fileStream.ReadAsync(output, 0, output.Length);
+                        int rlen = await fileStream.ReadAsync(output, 0, output.Length);
                         dw.WriteBytes(output);
                     }
                     ProgressVisibility = false;
@@ -504,13 +516,13 @@ namespace DocDirect.ViewModel
             Debug.WriteLine("--->> DownloadFileAsync");
            
             //1. Get lenght hash
-            await dr.LoadAsync(sizeof(UInt32));
-            UInt32 lenght = dr.ReadUInt32();
+            //await dr.LoadAsync(sizeof(UInt32));
+            //UInt32 lenght = dr.ReadUInt32();
             
-            byte[] hashFile = new byte[lenght]; 
+            //byte[] hashFile = new byte[lenght]; 
             //2. Download hash
-            await dr.LoadAsync(lenght);
-            dr.ReadBytes(hashFile);
+            await dr.LoadAsync(sizeof(UInt64));
+            UInt64 hashFile = dr.ReadUInt64();
 
             StorageFile file;
             //3. Read the filename lenght
@@ -539,12 +551,15 @@ namespace DocDirect.ViewModel
             
             ProgressVisibility = false;
             // compare the hash value
-            if(_cryptoUtils.CompareHash(file, hashFile))
+            if (_cryptoUtils.CompareHash(file, hashFile))
             {
+                Debug.WriteLine("--->> CompareHash == True ");
                 //DialogBoxInfo dlg = new DialogBoxInfo("File is received, the hash value identical!", "Info");
                 //dlg.ShowDialog();        
                 
                 await SendSuccessfulTransmission();
+
+                FilesList.Add(SetFileToCollection(file.Path));
             }
         }
         private async Task<InMemoryRandomAccessStream> DownloadFile(DataReader dr, ulong fileLength, IProgress<UInt64> progress)
@@ -592,19 +607,16 @@ namespace DocDirect.ViewModel
             Debug.WriteLine("--->> ExchangeKeyDownload");
 
             await dr.LoadAsync(sizeof(UInt64));
-            _cryptoUtils.distributedKey = dr.ReadUInt64();
+            _cryptoUtils.generatedKeyClient = dr.ReadUInt64();
 
             await dr.LoadAsync(sizeof(UInt64));
-            _cryptoUtils.PublicKey.E = dr.ReadUInt64();
+            _cryptoUtils.PublicKeyClient.E = dr.ReadUInt64();
 
             await dr.LoadAsync(sizeof(UInt64));
-            _cryptoUtils.PublicKey.N = dr.ReadUInt64();
+            _cryptoUtils.PublicKeyClient.N = dr.ReadUInt64();
 
             dr.DetachStream();
-
-            _cryptoUtils.GenerateSharedKey();
-            //_cryptoUtils.GenerateHash();
-
+            
             await ReturnKeySend();
         }
         private async Task ReturnKeySend()
@@ -632,7 +644,7 @@ namespace DocDirect.ViewModel
             Debug.WriteLine("--->> ReturnKeyDownload");
 
             await dr.LoadAsync(sizeof(UInt64));
-            _cryptoUtils.distributedKey = dr.ReadUInt64();
+            _cryptoUtils.generatedKeyClient = dr.ReadUInt64();
            
             dr.DetachStream();
 

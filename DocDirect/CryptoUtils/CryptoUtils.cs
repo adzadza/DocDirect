@@ -19,7 +19,8 @@ namespace DocDirect.Crypto
         private DiffiHelman  _diffi;
         private RSA          _rsa;
         private Key          _publicKey;
-        private byte[]       _hashFile;
+        private UInt64       _generatedKeyClient; // Y
+        //private byte[]       _hashFile;
        
         public CryptoUtils()
         {
@@ -29,6 +30,14 @@ namespace DocDirect.Crypto
         }
 
         #region Property
+        public UInt64 generatedKeyClient
+        {
+            get { return _generatedKeyClient; }
+            set
+            {
+                _generatedKeyClient = value;
+            }
+        }
         // отправляется пользователю для генерации общего ключа
         public UInt64 distributedKey
         {
@@ -49,16 +58,20 @@ namespace DocDirect.Crypto
             get { return _diffi.randKey; }
         }       
         // открытый ключ
-        public Key PublicKey
+        public Key PublicKeyClient
         {
             get { return _publicKey; }
             set { _publicKey = value; }
         }
-        public byte[] GetHashFile
+        public Key PublicKey
         {
-            get { return _hashFile; }
-            set { _hashFile = value; }
+            get { return _rsa.PublicKey; }
         }
+        //public byte[] GetHashFile
+        //{
+        //    get { return _hashFile; }
+        //    set { _hashFile = value; }
+        //}
         #endregion
 
         #region Method
@@ -66,28 +79,29 @@ namespace DocDirect.Crypto
         {
             return GetMD5Hash(_file);            
         }
-        public void GenerateSharedKey()
+        //public void GenerateSharedKey()
+        //{
+        //    // вычисляем общий ключ
+        //    sharedKey = DiffiHelman.PowMod(distributedKey, randKey, P);
+        //}
+        public UInt64 DigitalSignature(byte[] hash)
         {
-            // вычисляем общий ключ
-            sharedKey = DiffiHelman.PowMod(distributedKey, randKey, P);
+            UInt64 localHash = BitConverter.ToUInt64(hash,0);
+            // hash = m^d mod n
+            return PowMod(localHash, _rsa.PrivateKey.E, _rsa.PrivateKey.N);
         }
-
-        public bool CompareHash(StorageFile file, byte[] hashFile)
+        public bool CompareHash(StorageFile file, UInt64 hashFile)
         {
-            byte[] tmpNewHashFile = GetMD5Hash(file);
-
             bool bEqual = true;
-            if (tmpNewHashFile.Length == hashFile.Length)
-            {
-                for(int i=0; i<hashFile.Length-1; i++)
-                {
-                    if (tmpNewHashFile[i] != hashFile[i])
-                    {
-                        bEqual = false;
-                        break;
-                    }
-                }
-            }
+            byte[] tmpNewHashFile = GetMD5Hash(file);
+            UInt64 localHash = BitConverter.ToUInt64(tmpNewHashFile, 0);
+            
+            // m = s^e mod n
+            UInt64 imageHash = PowMod(hashFile, PublicKey.E, PublicKey.N);
+
+            if (localHash != hashFile)
+                bEqual = false;
+            
             return bEqual;
         }
         private byte[] GetMD5Hash(StorageFile file)
@@ -103,6 +117,21 @@ namespace DocDirect.Crypto
             fileStream.Close();
             return hash;
         }
+        public static UInt64 PowMod(UInt64 x, UInt64 d, UInt64 n)
+        {
+            UInt64 y = 1;
+            while (d > 0)
+            {
+                if ((d % 2) != 0)
+                {
+                    y = (y * x) % n;
+                    d = d - 1;
+                }
+                d /= 2;
+                x = (x * x) % n;
+            }
+            return y;
+        }
         #endregion
     }
 
@@ -111,7 +140,7 @@ namespace DocDirect.Crypto
         private UInt64 _p = 11, _a = 7;  // От 0 до 18 446 744 073 709 551 615
         private UInt64 _randKey = 3;     // X
         private UInt64 _distributedKey;  // Y
-        private UInt64 _sharedKey;       // z
+        private UInt64 _sharedKey;       // Z
 
         #region Constructor
         public DiffiHelman()
